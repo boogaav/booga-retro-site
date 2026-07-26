@@ -1,6 +1,6 @@
 # BOOGA — personal site
 
-Retro CRT-themed portfolio for Andriy "BOOGA" Bugayevskyy.
+Retro CRT-themed portfolio for BOOGA.
 
 **Live:** https://booga.me/
 
