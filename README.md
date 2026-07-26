@@ -2,7 +2,7 @@
 
 Retro CRT-themed portfolio for Andriy "BOOGA" Bugayevskyy.
 
-**Live:** https://boogaav.github.io/booga-retro-site/
+**Live:** https://booga.me/
 
 A single self-contained `index.html` — no build step, no dependencies to install.
 Open it directly in a browser to work on it.
