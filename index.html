@@ -61,7 +61,7 @@
     align-items:start;
   }
   .portrait{
-    grid-row:1 / span 4; align-self:start;
+    grid-row:1 / span 3; align-self:start;
     width:76px; height:76px; border-radius:50%;
     object-fit:cover; display:block;
     border:1px solid var(--rule);
@@ -75,23 +75,6 @@
     margin:0; max-width:52ch; color:var(--muted);
     font-size:clamp(15px,1.7vw,17px);
   }
-  /* specimen-label badges under the standfirst */
-  .badges{
-    grid-column:2; margin:16px 0 0; padding:0; list-style:none;
-    display:flex; flex-wrap:wrap; gap:7px 8px;
-  }
-  .badge{
-    font-family:var(--mono); font-size:10.5px; letter-spacing:0.07em;
-    text-transform:uppercase; color:var(--muted);
-    border:1px solid var(--rule); border-radius:2px; padding:4px 9px;
-    white-space:nowrap;
-  }
-  .badge a{color:inherit; text-decoration:none}
-  .badge:has(a):hover{border-color:var(--accent); color:var(--accent)}
-  /* ◉ marks a credential, echoing the milestone dots on the plot */
-  .badge.cred{color:var(--ink); border-color:var(--faint)}
-  .badge.cred::before{content:"◉"; color:var(--accent); margin-right:6px; font-size:9px}
-
   .contact{
     grid-column:2; margin:18px 0 0; padding:0; list-style:none;
     display:flex; flex-wrap:wrap; align-items:center; gap:6px 10px;
@@ -290,8 +273,7 @@
     .wrap{padding:40px 20px 72px}
     header{grid-template-columns:1fr; row-gap:0}
     .portrait{grid-row:auto; width:64px; height:64px; margin-bottom:16px}
-    .badges, .contact{grid-column:1}
-    .badge{white-space:normal}
+    .contact{grid-column:1}
     .entry-head{grid-template-columns:1fr 22px; gap:0 16px}
     .when{grid-column:1/-1; margin-bottom:6px}
   }
@@ -309,12 +291,6 @@
       crypto-native through a full market cycle — grants, builder pipelines, partnerships,
       and one privacy blockchain run as CEO.
     </p>
-    <ul class="badges">
-      <li class="badge cred">YC Startup School</li>
-      <li class="badge cred">Binance X Fellow</li>
-      <li class="badge"><a href="https://proofofretreat.me/" target="_blank" rel="noopener">Runs Proof of Retreat — builder residency</a></li>
-      <li class="badge">Agent-native — Claude Code · Codex · OpenClaw · Hermes</li>
-    </ul>
     <ul class="contact">
       <li>
         <button class="icon-btn" id="copy-email" aria-label="Copy email: boogaav@gmail.com" title="boogaav@gmail.com — click to copy">
