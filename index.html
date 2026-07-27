@@ -174,12 +174,13 @@
   .entry{border-bottom:1px solid var(--rule)}
   .entry-head{
     all:unset; display:grid; box-sizing:border-box;
-    grid-template-columns:150px 1fr 22px; align-items:baseline; gap:0 24px;
+    grid-template-columns:168px 1fr 22px; align-items:baseline; gap:0 24px;
     width:100%; padding:20px 2px; cursor:pointer;
   }
   .entry-head:hover .org, .entry.on .org{color:var(--accent)}
   .entry-head:focus-visible{outline:1px solid var(--accent); outline-offset:3px}
-  .when{font-family:var(--mono); font-size:11.5px; color:var(--muted); letter-spacing:0.02em; white-space:nowrap}
+  /* dates wrap inside their column rather than running into the title */
+  .when{font-family:var(--mono); font-size:11.5px; color:var(--muted); letter-spacing:0.02em; line-height:1.45}
   .org{font-size:19px; letter-spacing:-0.01em; transition:color .12s}
   .role{display:block; font-size:14.5px; color:var(--muted); margin-top:2px}
   .sign{
@@ -242,7 +243,7 @@
     border-left:2px solid var(--rule); padding:2px 0 2px 12px;
   }
   @media (min-width:720px){
-    .body{padding-left:174px}
+    .body{padding-left:192px}
   }
 
   /* ---------- hover preview card ---------- */
