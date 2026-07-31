@@ -1,6 +1,6 @@
 # booga.me
 
-Personal site of Andriy (BOOGA) Bugayevskyy — career, media, and builder work
+Personal site of BOOGA — career, media, and builder work
 plotted as a minimal math diagram. Physicist (MSc), ecosystem operator.
 
 Live at **https://booga.me/** via GitHub Pages (`main` branch, root).
@@ -28,10 +28,10 @@ Pulsing accent dots on the Career plot mark the milestones.
 
 ## Share card
 
-`og.png` is rendered from the live page itself, not mocked up: load the site at a
-1200x630 viewport, hide the interactive furniture (tabs, contact row, cards, caption),
-fit the plot to the remaining height, screenshot. Re-render it whenever the career
-plot changes.
+`og.png` is rendered from the live page itself, not mocked up. With the dev server
+running, `node render-og.mjs` loads the site at a 1200x630 viewport, hides the
+interactive furniture, fits the plot to the remaining height, and writes og.png.
+Re-run it whenever the masthead or the career plot changes.
 
 ## Previous site
 
