@@ -28,6 +28,11 @@ const page = await ctx.newPage();
 await page.goto('http://localhost:5202/', { waitUntil: 'load' });
 await page.waitForTimeout(1200);
 
+/* the page opens on Media, which is a shelf and has no plot — the share card
+   wants the career plot, so select that series explicitly before capturing */
+await page.click('.tab[data-mode="career"]');
+await page.waitForTimeout(500);
+
 /* compose for the card: keep the identity and the plot, drop the interactive furniture */
 await page.addStyleTag({ content: `
   html, body { overflow: hidden !important; }

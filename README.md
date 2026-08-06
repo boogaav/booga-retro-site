@@ -22,15 +22,16 @@ Clicking a segment expands its card; hovering shows a preview.
 | Series  | `y` axis            | From |
 |---------|---------------------|------|
 | Career  | scope of ownership  | 2017 |
-| Media   | format              | 2023 |
+| Media   | *(shelf, not plotted)* | —    |
 | Tools   | domain              | 2021 |
 
 Pulsing accent dots on the Career plot mark the milestones.
 
-Media has a second view, toggled at the right of the tab row. **Shelf** shows the
-video projects as VHS cassettes — click one to play its trailer — and the books as
-physical books, which preview on hover. Cover art comes from the real thing:
-YouTube thumbnails for the shows, the printed cover for Jackie Chain Adventure.
+**Media is the landing view and is a shelf, not a plot**: the video projects are
+VHS cassettes — click one to play its trailer and reach its links — and the books
+are physical books that preview on hover and link out. Cover art comes from the
+real thing: YouTube thumbnails for the shows, the printed cover for Jackie Chain
+Adventure. Career and Tools are plotted as described above.
 
 ## Share card
 
