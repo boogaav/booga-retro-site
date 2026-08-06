@@ -8,7 +8,8 @@ Live at **https://booga.me/** via GitHub Pages (`main` branch, root).
 ## Structure
 
 - `index.html` — the whole site. No build step, no dependencies. Open it directly.
-- `previews.js` — hover-preview screenshots, embedded as WebP data URIs.
+- `previews.js` — hover-preview screenshots and shelf cover art, embedded as WebP data URIs
+  (`window.PREVIEWS` and `window.COVERS`).
 - `portrait.webp`, `og.png` — portrait and the social share card (1200x630).
 - `CNAME` — custom domain binding. **Do not delete** or the domain detaches on push.
 
@@ -25,6 +26,11 @@ Clicking a segment expands its card; hovering shows a preview.
 | Builder | domain              | 2021 |
 
 Pulsing accent dots on the Career plot mark the milestones.
+
+Media has a second view, toggled at the right of the tab row. **Shelf** shows the
+video projects as VHS cassettes — click one to play its trailer — and the books as
+physical books, which preview on hover. Cover art comes from the real thing:
+YouTube thumbnails for the shows, the printed cover for Jackie Chain Adventure.
 
 ## Share card
 

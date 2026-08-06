@@ -110,6 +110,165 @@
   .tab:focus-visible{outline:1px solid var(--accent); outline-offset:2px}
   .empty-note{font-family:var(--mono); font-size:12px; fill:var(--muted); letter-spacing:0.1em}
 
+  /* plot / shelf toggle, right-aligned in the tab row */
+  .viewswitch{margin-left:auto; display:flex; align-items:center; gap:7px; padding-bottom:9px}
+  .viewswitch[hidden]{display:none}
+  .vbtn{
+    all:unset; box-sizing:border-box; cursor:pointer;
+    font-family:var(--mono); font-size:10.5px; letter-spacing:0.1em; text-transform:uppercase;
+    color:var(--faint);
+  }
+  .vbtn:hover{color:var(--ink)}
+  .vbtn.on{color:var(--accent)}
+  .vbtn:focus-visible{outline:1px solid var(--accent); outline-offset:3px}
+  .vsep{font-family:var(--mono); font-size:10.5px; color:var(--rule)}
+
+  /* ---------- shelf ---------- */
+  .shelf[hidden]{display:none}
+  .shelf-h{
+    font-family:var(--mono); font-size:10.5px; letter-spacing:0.1em; text-transform:uppercase;
+    color:var(--muted); font-weight:400; margin:0 0 20px;
+    padding-bottom:9px; border-bottom:1px solid var(--rule);
+  }
+  .shelf-h:not(:first-child){margin-top:56px}
+  .rack{display:flex; flex-wrap:wrap; align-items:flex-start; gap:34px 30px; margin:0 0 4px}
+
+  /* --- VHS cassette --- */
+  .vhs{
+    all:unset; box-sizing:border-box; cursor:pointer;
+    width:280px; flex:0 0 auto; display:block;
+    transition:transform .18s ease;
+  }
+  .vhs:hover, .vhs:focus-visible{transform:translateY(-5px)}
+  .vhs:focus-visible .shell{outline:1px solid var(--accent); outline-offset:3px}
+  .shell{
+    display:block; position:relative; border-radius:4px 4px 3px 3px;
+    background:linear-gradient(#2c2f34, #1a1c20 62%, #101215);
+    padding:9px 9px 0;
+    box-shadow:0 5px 16px rgba(0,0,0,.22), inset 0 1px 0 rgba(255,255,255,.09);
+  }
+  @media (prefers-color-scheme: dark){
+    .shell{box-shadow:0 5px 16px rgba(0,0,0,.5), inset 0 1px 0 rgba(255,255,255,.07)}
+  }
+  /* the paper label carrying the show's artwork */
+  .label{
+    display:block; background:#f4f2ec; border-radius:1px; overflow:hidden;
+    box-shadow:0 1px 2px rgba(0,0,0,.4);
+  }
+  .label img{display:block; width:100%; aspect-ratio:16/9; object-fit:cover}
+  .label-foot{
+    display:flex; justify-content:space-between; align-items:baseline; gap:10px;
+    padding:6px 8px 7px; background:#f4f2ec;
+    font-family:var(--mono); font-size:9px; letter-spacing:0.09em; text-transform:uppercase;
+    color:#22242a; white-space:nowrap;
+  }
+  /* keep the label to a single line so every tape is the same height */
+  .label-foot > span:first-child{min-width:0; overflow:hidden; text-overflow:ellipsis}
+  .label-foot .yr{color:#8b8f97; flex:none}
+  /* window strip at the bottom of the shell, showing the two reels */
+  .reels{
+    display:flex; justify-content:center; align-items:center; gap:52px;
+    height:30px; margin:7px -9px 0;
+    background:linear-gradient(#0d0e11, #17191d);
+    border-radius:0 0 3px 3px;
+    border-top:1px solid rgba(255,255,255,.06);
+  }
+  .reel{
+    width:15px; height:15px; border-radius:50%;
+    background:radial-gradient(circle at 50% 45%, #4a4e56 0 3px, #212429 3.5px 100%);
+    box-shadow:inset 0 0 0 1px rgba(255,255,255,.12);
+  }
+  /* play affordance over the artwork */
+  .play{
+    position:absolute; left:50%; top:calc(50% - 12px); transform:translate(-50%,-50%) scale(.9);
+    width:42px; height:42px; border-radius:50%;
+    background:rgba(14,15,18,.62); backdrop-filter:blur(2px);
+    display:grid; place-items:center;
+    opacity:0; transition:opacity .18s ease, transform .18s ease;
+  }
+  .play::after{
+    content:""; width:0; height:0; margin-left:3px;
+    border-left:13px solid #fff; border-top:8px solid transparent; border-bottom:8px solid transparent;
+  }
+  .vhs:hover .play, .vhs:focus-visible .play{opacity:1; transform:translate(-50%,-50%) scale(1)}
+  .vhs-cap{
+    display:block; margin-top:11px;
+    font-family:var(--mono); font-size:10px; letter-spacing:0.08em; text-transform:uppercase;
+    color:var(--muted);
+  }
+
+  /* --- physical book --- */
+  .book{
+    display:block; width:186px; flex:0 0 auto; text-decoration:none; color:inherit;
+    perspective:900px;
+  }
+  .book-3d{
+    position:relative; display:block; transform-style:preserve-3d;
+    transition:transform .28s ease, box-shadow .28s ease;
+    transform:rotateY(-6deg);
+    box-shadow:6px 8px 20px rgba(0,0,0,.20);
+    border-radius:1px 3px 3px 1px; overflow:hidden;
+  }
+  .book:hover .book-3d, .book:focus-visible .book-3d{
+    transform:rotateY(-15deg) translateY(-5px);
+    box-shadow:12px 14px 28px rgba(0,0,0,.26);
+  }
+  @media (prefers-color-scheme: dark){
+    .book-3d{box-shadow:6px 8px 20px rgba(0,0,0,.5)}
+    .book:hover .book-3d{box-shadow:12px 14px 28px rgba(0,0,0,.6)}
+  }
+  .book-3d img{display:block; width:100%; aspect-ratio:2/3; object-fit:cover}
+  /* spine shadow on the left, page-block highlight on the right */
+  .book-3d::before{
+    content:""; position:absolute; inset:0 auto 0 0; width:13px;
+    background:linear-gradient(90deg, rgba(0,0,0,.42), rgba(0,0,0,.14) 55%, rgba(255,255,255,.14));
+    pointer-events:none;
+  }
+  .book-3d::after{
+    content:""; position:absolute; inset:0 0 0 auto; width:4px;
+    background:repeating-linear-gradient(180deg, #efece4 0 1px, #cfcabc 1px 2px);
+    pointer-events:none;
+  }
+  .book:focus-visible{outline:1px solid var(--accent); outline-offset:5px}
+  .book-cap{
+    display:block; margin-top:13px;
+    font-family:var(--mono); font-size:10px; letter-spacing:0.08em; text-transform:uppercase;
+    color:var(--muted);
+  }
+  .book-cap b{display:block; font-family:var(--serif); font-size:15px; font-weight:400;
+    letter-spacing:0; text-transform:none; color:var(--ink); margin-bottom:3px}
+  .book:hover .book-cap b{color:var(--accent)}
+
+  /* ---------- video modal ---------- */
+  .modal[hidden]{display:none}
+  .modal{position:fixed; inset:0; z-index:40; display:grid; place-items:center; padding:24px}
+  .modal-back{position:absolute; inset:0; background:rgba(10,11,13,.72)}
+  .modal-box{
+    position:relative; width:min(860px, 100%); max-height:88vh; overflow:auto;
+    background:var(--paper); border:1px solid var(--rule);
+    box-shadow:0 18px 50px rgba(0,0,0,.35);
+  }
+  .modal-head{
+    display:flex; align-items:center; justify-content:space-between; gap:16px;
+    padding:12px 14px; border-bottom:1px solid var(--rule);
+    font-family:var(--mono); font-size:11px; letter-spacing:0.08em; text-transform:uppercase;
+    color:var(--muted);
+  }
+  .modal-x{
+    all:unset; cursor:pointer; font-size:20px; line-height:1; color:var(--faint); padding:0 4px;
+  }
+  .modal-x:hover{color:var(--accent)}
+  .modal-x:focus-visible{outline:1px solid var(--accent); outline-offset:2px}
+  .modal-body{padding:14px}
+  .modal-body .frame{width:100%; aspect-ratio:16/9; background:var(--grid); border:1px solid var(--rule)}
+  .modal-body .frame iframe{display:block; width:100%; height:100%; border:0}
+  .modal-body .twitter-tweet{margin:0 auto !important}
+  .modal-note{
+    margin:12px 0 0; font-family:var(--mono); font-size:11px; color:var(--muted);
+  }
+  .modal-note a{color:var(--muted); border-bottom:1px solid var(--rule); text-decoration:none}
+  .modal-note a:hover{color:var(--accent); border-bottom-color:var(--accent)}
+
   /* ---------- figure ---------- */
   figure{margin:0}
   .plot-scroll{overflow-x:auto; overflow-y:hidden; -webkit-overflow-scrolling:touch}
@@ -323,7 +482,14 @@
     <button class="tab on" data-mode="career"  role="tab" aria-selected="true">Career</button>
     <button class="tab"    data-mode="media"   role="tab" aria-selected="false">Media</button>
     <button class="tab"    data-mode="builder" role="tab" aria-selected="false">Builder</button>
+    <span class="viewswitch" id="viewswitch" hidden>
+      <button class="vbtn on" data-view="plot"  aria-pressed="true">Plot</button>
+      <span class="vsep">/</span>
+      <button class="vbtn"    data-view="shelf" aria-pressed="false">Shelf</button>
+    </span>
   </nav>
+
+  <section class="shelf" id="shelf" hidden aria-label="Media shelf"></section>
 
   <figure>
     <div class="plot-scroll">
@@ -345,6 +511,17 @@
     <span id="srccap">source: CV, 2026</span>
   </footer>
 
+</div>
+
+<div class="modal" id="modal" hidden>
+  <div class="modal-back" data-close></div>
+  <div class="modal-box" role="dialog" aria-modal="true" aria-labelledby="modal-title">
+    <div class="modal-head">
+      <span id="modal-title"></span>
+      <button class="modal-x" data-close aria-label="Close">×</button>
+    </div>
+    <div class="modal-body" id="modal-body"></div>
+  </div>
 </div>
 
 <script src="previews.js"></script>
@@ -468,6 +645,7 @@ const MEDIA = [
     dates: 'Apr 2023 — Oct 2024',
     meta: '',
     t0: 2023 + M(4), t1: 2024 + M(11), level: 1,
+    shelf: 'tape', trailer: '2nvN0Zr7MdQ',
     lead: 'Crypto reality show on YouTube.',
     points: [],
     links: [
@@ -483,6 +661,7 @@ const MEDIA = [
     dates: 'Jul 2024 — Apr 2025',
     meta: '',
     t0: 2024 + M(7), t1: 2025 + M(5), level: 2,
+    shelf: 'book',
     lead: '',
     points: [],
     links: [
@@ -497,6 +676,7 @@ const MEDIA = [
     dates: 'Apr 2025 — Jun 2025',
     meta: '',
     t0: 2025 + M(4), t1: 2025 + M(7), level: 3,
+    shelf: 'tape', tweet: 'https://twitter.com/zerion/status/1779848307256250704',
     lead: '',
     points: [],
     links: [
@@ -515,6 +695,7 @@ const MEDIA = [
     dates: 'Jul 2026 — onwards',
     meta: '',
     t0: 2026 + M(7), t1: null, level: 2,
+    shelf: 'book',
     lead: '',
     points: [],
     links: [
@@ -529,6 +710,7 @@ const MEDIA = [
     dates: 'Jul 2026 — onwards',
     meta: '',
     t0: 2026 + M(7), t1: null, level: 3, labelBelow: true,
+    shelf: 'tape', trailer: 'Zc1nBlPuatU',
     lead: '“Who Wants to Be a Crypto Millionaire” — live game show.',
     points: [],
     links: [
@@ -909,6 +1091,18 @@ function render(key) {
       if (!wrap.classList.contains('on')) nodes[r.id].classList.remove('on');
     });
   });
+
+  /* --- the shelf is media-only; other series always show the plot --- */
+  const isMedia = key === 'media';
+  viewSwitch.hidden = !isMedia;
+  if (isMedia) {
+    buildShelf(S.roles);
+    setView(view);
+  } else {
+    document.querySelector('figure').hidden = false;
+    entriesEl.hidden = false;
+    shelfEl.hidden = true;
+  }
 }
 
 /* ------------------------------------------------------------------ *
@@ -953,6 +1147,127 @@ function loadTweets(scope) {
     document.head.appendChild(s);
   }
 }
+
+/* ------------------------------------------------------------------ *
+ * shelf view — video projects as VHS tapes, books as physical books
+ * ------------------------------------------------------------------ */
+const shelfEl = document.getElementById('shelf');
+const viewSwitch = document.getElementById('viewswitch');
+let view = 'plot';
+
+const esc = s => String(s).replace(/[&<>"]/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' }[c]));
+
+function buildShelf(roles) {
+  const covers = window.COVERS || {};
+  const tapes = roles.filter(r => r.shelf === 'tape');
+  const books = roles.filter(r => r.shelf === 'book');
+  let html = '';
+
+  if (tapes.length) {
+    html += '<h2 class="shelf-h">Tapes</h2><div class="rack">';
+    html += tapes.map(r => `
+      <button class="vhs" data-id="${r.id}" aria-label="${esc(r.org)} — play trailer">
+        <span class="shell">
+          <span class="label">
+            ${covers[r.id] ? `<img src="${covers[r.id]}" alt="">` : ''}
+            <span class="label-foot"><span>${esc(r.org)}</span><span class="yr">${esc(r.dates)}</span></span>
+          </span>
+          <span class="play" aria-hidden="true"></span>
+          <span class="reels"><span class="reel"></span><span class="reel"></span></span>
+        </span>
+        <span class="vhs-cap">${esc(r.short || r.role)}</span>
+      </button>`).join('');
+    html += '</div>';
+  }
+
+  if (books.length) {
+    html += '<h2 class="shelf-h">Books</h2><div class="rack">';
+    html += books.map(r => {
+      const href = r.links && r.links.length ? r.links[0].href : null;
+      return `
+      <a class="book" data-id="${r.id}" ${href ? `href="${href}" target="_blank" rel="noopener"` : 'href="#" role="button"'}>
+        <span class="book-3d">${covers[r.id] ? `<img src="${covers[r.id]}" alt="${esc(r.org)} cover">` : ''}</span>
+        <span class="book-cap"><b>${esc(r.org)}</b>${esc(r.dates)}</span>
+      </a>`;
+    }).join('');
+    html += '</div>';
+  }
+
+  shelfEl.innerHTML = html;
+
+  /* tapes open the trailer; books just preview on hover and link out */
+  shelfEl.querySelectorAll('.vhs').forEach(btn => {
+    const r = roles.find(x => x.id === btn.dataset.id);
+    btn.addEventListener('click', () => openModal(r));
+    btn.addEventListener('mouseenter', () => showPeek(r, btn));
+    btn.addEventListener('mouseleave', hidePeek);
+  });
+  shelfEl.querySelectorAll('.book').forEach(a => {
+    const r = roles.find(x => x.id === a.dataset.id);
+    a.addEventListener('mouseenter', () => showPeek(r, a));
+    a.addEventListener('mouseleave', hidePeek);
+    a.addEventListener('focus', () => showPeek(r, a));
+    a.addEventListener('blur', hidePeek);
+  });
+}
+
+function setView(next) {
+  view = next;
+  document.querySelectorAll('.vbtn').forEach(b => {
+    const on = b.dataset.view === next;
+    b.classList.toggle('on', on);
+    b.setAttribute('aria-pressed', String(on));
+  });
+  const shelfOn = next === 'shelf';
+  document.querySelector('figure').hidden = shelfOn;
+  entriesEl.hidden = shelfOn;
+  shelfEl.hidden = !shelfOn;
+  hidePeek();
+}
+
+/* ------------------------------------------------------------------ *
+ * trailer modal
+ * ------------------------------------------------------------------ */
+const modal = document.getElementById('modal');
+const modalBody = document.getElementById('modal-body');
+const modalTitle = document.getElementById('modal-title');
+let lastFocus = null;
+
+function openModal(r) {
+  hidePeek();
+  lastFocus = document.activeElement;
+  modalTitle.textContent = `${r.org} — ${r.dates}`;
+  if (r.trailer) {
+    modalBody.innerHTML =
+      `<div class="frame"><iframe src="https://www.youtube-nocookie.com/embed/${r.trailer}?autoplay=1&rel=0"
+        title="${esc(r.org)} trailer" allow="accelerometer; autoplay; encrypted-media; picture-in-picture"
+        allowfullscreen></iframe></div>`;
+  } else if (r.tweet) {
+    /* no embeddable trailer — show the post that carries the footage */
+    modalBody.innerHTML =
+      `<blockquote class="twitter-tweet" data-dnt="true" data-conversation="none"
+        data-theme="${matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light'}"><a href="${r.tweet}"></a></blockquote>` +
+      (r.links && r.links.length
+        ? `<p class="modal-note">Full broadcast: <a href="${r.links[0].href}" target="_blank" rel="noopener">${esc(r.links[0].label)} ↗</a></p>`
+        : '');
+    loadTweets(modalBody);
+  }
+  modal.hidden = false;
+  document.body.style.overflow = 'hidden';
+  modal.querySelector('.modal-x').focus();
+}
+
+function closeModal() {
+  modal.hidden = true;
+  modalBody.innerHTML = '';          // stops playback
+  document.body.style.overflow = '';
+  if (lastFocus) lastFocus.focus();
+}
+
+modal.addEventListener('click', e => { if (e.target.hasAttribute('data-close')) closeModal(); });
+document.addEventListener('keydown', e => { if (e.key === 'Escape' && !modal.hidden) closeModal(); });
+
+document.querySelectorAll('.vbtn').forEach(b => b.addEventListener('click', () => setView(b.dataset.view)));
 
 /* ------------------------------------------------------------------ *
  * series switcher
