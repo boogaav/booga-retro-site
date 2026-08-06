@@ -1,6 +1,6 @@
 # booga.me
 
-Personal site of BOOGA — career, media, and builder work
+Personal site of BOOGA — career, media, and tools
 plotted as a minimal math diagram. Physicist (MSc), ecosystem operator.
 
 Live at **https://booga.me/** via GitHub Pages (`main` branch, root).
@@ -23,7 +23,7 @@ Clicking a segment expands its card; hovering shows a preview.
 |---------|---------------------|------|
 | Career  | scope of ownership  | 2017 |
 | Media   | format              | 2023 |
-| Builder | domain              | 2021 |
+| Tools   | domain              | 2021 |
 
 Pulsing accent dots on the Career plot mark the milestones.
 
