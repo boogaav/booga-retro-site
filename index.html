@@ -226,6 +226,47 @@
     letter-spacing:0; text-transform:none; color:var(--ink); margin-bottom:3px}
   .book:hover .book-cap b{color:var(--accent)}
 
+  /* --- AI videos as film strips --- */
+  .film{
+    all:unset; box-sizing:border-box; cursor:pointer;
+    width:300px; flex:0 0 auto; display:block;
+    transition:transform .18s ease;
+  }
+  .film:hover, .film:focus-visible{transform:translateY(-4px)}
+  .film:focus-visible .strip{outline:1px solid var(--accent); outline-offset:3px}
+  .strip{
+    display:block; background:#141518; border-radius:2px; padding:0;
+    box-shadow:0 4px 14px rgba(0,0,0,.2);
+  }
+  /* sprocket bands top and bottom */
+  .perf{
+    display:block; height:13px;
+    background-image:repeating-linear-gradient(90deg,
+      transparent 0 7px, rgba(255,255,255,.82) 7px 15px, transparent 15px 22px);
+    background-size:22px 7px; background-position:center; background-repeat:repeat-x;
+  }
+  .frame-still{
+    position:relative; display:block; background:#000;
+    border-top:1px solid rgba(255,255,255,.09); border-bottom:1px solid rgba(255,255,255,.09);
+  }
+  .frame-still img{
+    display:block; width:100%; aspect-ratio:16/9; object-fit:contain; background:#000;
+  }
+  .film-cap{display:block; margin-top:12px}
+  .film-cap b{display:block; font-family:var(--serif); font-size:16px; font-weight:400; color:var(--ink)}
+  .film:hover .film-cap b{color:var(--accent)}
+  .film-cap .sub{display:block; font-size:14px; color:var(--muted); margin-top:1px}
+  .film-cap .when{
+    display:block; margin-top:5px;
+    font-family:var(--mono); font-size:10px; letter-spacing:0.08em; text-transform:uppercase;
+    color:var(--faint);
+  }
+  /* portrait embeds (Instagram) need a taller window than 16:9 */
+  .modal-body .frame.tall{
+    width:min(400px, 100%); margin:0 auto; aspect-ratio:0.56;
+    background:var(--paper);
+  }
+
   /* ---------- tools: apps on old laptop screens ---------- */
   .lab[hidden]{display:none}
   .bench{
@@ -685,6 +726,20 @@ const CAREER = [
     ]
   },
   {
+    id: 'zoolini',
+    org: 'Zoolini',
+    role: 'Dynamic NFT',
+    short: 'DYNAMIC NFT',
+    dates: 'Jun 2025',
+    meta: '',
+    t0: 2025 + M(6), t1: 2025 + M(6), level: 3, dy: 46,   // own launch, floated off the Proof of Retreat line
+    lead: 'A dynamic NFT collection.',
+    points: [],
+    links: [
+      { label: 'zoolini.club', href: 'https://zoolini.club/' }
+    ]
+  },
+  {
     id: 'world',
     org: 'World',
     role: 'APAC Ecosystem Lead',
@@ -820,21 +875,6 @@ const BUILDER = [
     ]
   },
   {
-    id: 'zoolini',
-    org: 'Zoolini',
-    role: 'Dynamic NFT',
-    short: 'DYNAMIC NFT',
-    dates: 'Jun 2025',
-    meta: '',
-    t0: 2025 + M(6), t1: 2025 + M(6), level: 1, dy: -34,
-    what: 'A dynamic NFT collection.',
-    lead: '',
-    points: [],
-    links: [
-      { label: 'zoolini.club', href: 'https://zoolini.club/' }
-    ]
-  },
-  {
     id: 'villedge',
     org: 'Villedge Tech',
     role: 'Popup-village platform',
@@ -878,6 +918,30 @@ const BUILDER = [
     links: [
       { label: 'thirdwheel.tech', href: 'https://thirdwheel.tech/' }
     ]
+  }
+];
+
+/* AI-made videos — trailers and a music video. Shown as film strips under the books. */
+const VIDEOS = [
+  {
+    id: 'colony-film', title: 'Colony', sub: 'Battle for Survival — trailer',
+    dates: 'Feb 2026', kind: 'yt', vid: 'DV15DUv47JY',
+    link: { label: 'youtube.com', href: 'https://www.youtube.com/watch?v=DV15DUv47JY' }
+  },
+  {
+    id: 'handshake-film', title: 'Handshake', sub: 'Trailer',
+    dates: 'Apr 2026', kind: 'yt', vid: 'YylVp-8jLUA',
+    link: { label: 'youtube.com', href: 'https://www.youtube.com/watch?v=YylVp-8jLUA' }
+  },
+  {
+    id: 'vibe', title: 'Vibe With Me', sub: 'Trailer',
+    dates: 'May 2026', kind: 'yt', vid: '0ogf-bWqLO4',
+    link: { label: 'youtube.com', href: 'https://www.youtube.com/watch?v=0ogf-bWqLO4' }
+  },
+  {
+    id: 'berlin', title: 'Berlin Calling', sub: 'Music video',
+    dates: '', kind: 'ig', embed: 'https://www.instagram.com/p/DYR79B0BzSU/embed',
+    link: { label: 'instagram.com', href: 'https://www.instagram.com/p/DYR79B0BzSU/' }
   }
 ];
 
@@ -1266,7 +1330,7 @@ function buildShelf(roles) {
   }
 
   if (books.length) {
-    html += '<h2 class="shelf-h">Books</h2><div class="rack">';
+    html += '<h2 class="shelf-h">Interactive books</h2><div class="rack">';
     html += books.map(r => {
       const href = r.links && r.links.length ? r.links[0].href : null;
       return `
@@ -1278,6 +1342,26 @@ function buildShelf(roles) {
     html += '</div>';
   }
 
+  /* AI-made videos, as film strips */
+  const films = window.FILMS || {};
+  html += '<h2 class="shelf-h">AI videos</h2><div class="rack">';
+  html += VIDEOS.map(v => `
+    <button class="film" data-id="${v.id}" aria-label="${esc(v.title)} — play">
+      <span class="strip">
+        <span class="perf"></span>
+        <span class="frame-still">${films[v.id] ? `<img src="${films[v.id]}" alt="">` : ''}
+          <span class="play" aria-hidden="true"></span>
+        </span>
+        <span class="perf"></span>
+      </span>
+      <span class="film-cap">
+        <b>${esc(v.title)}</b>
+        <span class="sub">${esc(v.sub)}</span>
+        ${v.dates ? `<span class="when">${esc(v.dates)}</span>` : ''}
+      </span>
+    </button>`).join('');
+  html += '</div>';
+
   shelfEl.innerHTML = html;
 
   /* tapes open the trailer; books just preview on hover and link out */
@@ -1286,6 +1370,10 @@ function buildShelf(roles) {
     btn.addEventListener('click', () => openModal(r));
     btn.addEventListener('mouseenter', () => showPeek(r, btn));
     btn.addEventListener('mouseleave', hidePeek);
+  });
+  shelfEl.querySelectorAll('.film').forEach(btn => {
+    const v = VIDEOS.find(x => x.id === btn.dataset.id);
+    btn.addEventListener('click', () => openVideo(v));
   });
   shelfEl.querySelectorAll('.book').forEach(a => {
     const r = roles.find(x => x.id === a.dataset.id);
@@ -1326,6 +1414,23 @@ function openModal(r) {
         data-theme="${matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light'}"><a href="${r.tweet}"></a></blockquote>` + note;
     loadTweets(modalBody);
   }
+  modal.hidden = false;
+  document.body.style.overflow = 'hidden';
+  modal.querySelector('.modal-x').focus();
+}
+
+/* AI videos: YouTube plays inline; Instagram gets its own portrait embed */
+function openVideo(v) {
+  hidePeek();
+  lastFocus = document.activeElement;
+  modalTitle.textContent = v.dates ? `${v.title} — ${v.dates}` : v.title;
+  const note = `<p class="modal-note"><a href="${v.link.href}" target="_blank" rel="noopener">${esc(v.link.label)} ↗</a></p>`;
+  modalBody.innerHTML = v.kind === 'yt'
+    ? `<div class="frame"><iframe src="https://www.youtube-nocookie.com/embed/${v.vid}?autoplay=1&rel=0"
+         title="${esc(v.title)}" allow="accelerometer; autoplay; encrypted-media; picture-in-picture"
+         allowfullscreen></iframe></div>` + note
+    : `<div class="frame tall"><iframe src="${v.embed}" title="${esc(v.title)}"
+         allowtransparency="true" allowfullscreen scrolling="no"></iframe></div>` + note;
   modal.hidden = false;
   document.body.style.overflow = 'hidden';
   modal.querySelector('.modal-x').focus();
