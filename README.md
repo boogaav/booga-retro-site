@@ -23,9 +23,12 @@ Clicking a segment expands its card; hovering shows a preview.
 |---------|---------------------|------|
 | Career  | scope of ownership  | 2017 |
 | Media   | *(shelf, not plotted)* | —    |
-| Tools   | domain              | 2021 |
+| Tools   | *(bench, not plotted)* | —    |
 
 Pulsing accent dots on the Career plot mark the milestones.
+
+**Tools is a bench, not a plot**: each app sits on an old laptop screen showing a
+real screenshot of it running, and links out. Screens live in `window.SCREENS`.
 
 **Media is the landing view and is a shelf, not a plot**: the video projects are
 VHS cassettes — click one to play its trailer and reach its links — and the books

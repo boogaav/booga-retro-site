@@ -226,6 +226,89 @@
     letter-spacing:0; text-transform:none; color:var(--ink); margin-bottom:3px}
   .book:hover .book-cap b{color:var(--accent)}
 
+  /* ---------- tools: apps on old laptop screens ---------- */
+  .lab[hidden]{display:none}
+  .bench{
+    display:grid; grid-template-columns:repeat(auto-fill, minmax(300px, 1fr));
+    gap:46px 34px; margin:0;
+  }
+  .mac{display:block; text-decoration:none; color:inherit}
+  .mac:focus-visible{outline:1px solid var(--accent); outline-offset:6px}
+  /* lid: brushed aluminium shell around a black bezel */
+  .lid{
+    display:block;                 /* span: needs this or the screen collapses */
+    position:relative; border-radius:10px 10px 4px 4px;
+    padding:11px 11px 26px;
+    background:linear-gradient(#e6e5e1, #d3d2cd 58%, #c2c1bb);
+    box-shadow:0 3px 12px rgba(0,0,0,.16), inset 0 1px 0 rgba(255,255,255,.85);
+    transition:transform .2s ease, box-shadow .2s ease;
+  }
+  .mac:hover .lid, .mac:focus-visible .lid{
+    transform:translateY(-4px);
+    box-shadow:0 10px 24px rgba(0,0,0,.22), inset 0 1px 0 rgba(255,255,255,.85);
+  }
+  @media (prefers-color-scheme: dark){
+    .lid{
+      background:linear-gradient(#54565c, #43454a 58%, #35373b);
+      box-shadow:0 3px 12px rgba(0,0,0,.5), inset 0 1px 0 rgba(255,255,255,.14);
+    }
+    .mac:hover .lid{box-shadow:0 10px 24px rgba(0,0,0,.6), inset 0 1px 0 rgba(255,255,255,.14)}
+  }
+  .screen{
+    position:relative; display:block; overflow:hidden;
+    background:#0b0c0e; border-radius:3px;
+    box-shadow:inset 0 0 0 1px rgba(0,0,0,.55);
+  }
+  .screen img{
+    display:block; width:100%; aspect-ratio:16/10; object-fit:cover; object-position:top center;
+  }
+  /* faint glass sheen across the panel */
+  .screen::after{
+    content:""; position:absolute; inset:0; pointer-events:none;
+    background:linear-gradient(197deg, rgba(255,255,255,.13) 0 32%, rgba(255,255,255,0) 62%);
+  }
+  /* camera dot above the panel, wordmark-free chin below */
+  .lid::before{
+    content:""; position:absolute; top:5px; left:50%; transform:translateX(-50%);
+    width:3px; height:3px; border-radius:50%; background:rgba(0,0,0,.32);
+  }
+  .lid::after{
+    content:""; position:absolute; bottom:9px; left:50%; transform:translateX(-50%);
+    width:52px; height:4px; border-radius:2px; background:rgba(0,0,0,.10);
+  }
+  @media (prefers-color-scheme: dark){
+    .lid::before{background:rgba(255,255,255,.22)}
+    .lid::after{background:rgba(255,255,255,.13)}
+  }
+  /* the base the lid sits on, with the trackpad lip notched out */
+  .base{
+    display:block; height:9px; margin:0 -13px;
+    border-radius:0 0 9px 9px;
+    background:linear-gradient(#c5c4be, #a9a8a2);
+    box-shadow:0 4px 8px rgba(0,0,0,.16);
+    position:relative;
+  }
+  .base::after{
+    content:""; position:absolute; top:0; left:50%; transform:translateX(-50%);
+    width:74px; height:4px; border-radius:0 0 5px 5px;
+    background:rgba(0,0,0,.18);
+  }
+  @media (prefers-color-scheme: dark){
+    .base{background:linear-gradient(#3b3d41, #2a2c30)}
+    .base::after{background:rgba(0,0,0,.5)}
+  }
+  .mac-cap{display:block; margin-top:16px}
+  .mac-cap b{
+    display:block; font-family:var(--serif); font-size:17px; font-weight:400; color:var(--ink);
+  }
+  .mac:hover .mac-cap b{color:var(--accent)}
+  .mac-cap .what{display:block; font-size:14.5px; color:var(--muted); margin-top:1px}
+  .mac-cap .when{
+    display:block; margin-top:6px;
+    font-family:var(--mono); font-size:10px; letter-spacing:0.08em; text-transform:uppercase;
+    color:var(--faint);
+  }
+
   /* ---------- video modal ---------- */
   .modal[hidden]{display:none}
   .modal{position:fixed; inset:0; z-index:40; display:grid; place-items:center; padding:24px}
@@ -473,6 +556,7 @@
   </nav>
 
   <section class="shelf" id="shelf" hidden aria-label="Media shelf"></section>
+  <section class="lab" id="lab" hidden aria-label="Tools"></section>
 
   <figure>
     <div class="plot-scroll">
@@ -713,6 +797,7 @@ const BUILDER = [
     meta: '',
     t0: 2021, t1: 2026, level: 1,
     spans: [[2021, 2022.5], [2025, 2026]],
+    what: 'Survival battles with a cash prize, played onchain.',
     lead: 'Crypto survival game — two lives: the 2021 – mid 2022 run, revived in 2025.',
     points: [],
     links: [
@@ -727,24 +812,11 @@ const BUILDER = [
     dates: '2023',
     meta: '',
     t0: 2023, t1: 2024, level: 2,
-    lead: '',
+    what: 'Browser extension that reads onchain activity anywhere on the web.',
+    lead: 'Built at ETHGlobal Paris, 2023.',
     points: [],
     links: [
       { label: 'x.com/chain_stalker', href: 'https://x.com/chain_stalker' }
-    ]
-  },
-  {
-    id: 'unblock',
-    org: 'Unblock Crypto',
-    role: 'Ecosystem campaign · EIP-6963',
-    short: 'CAMPAIGN',
-    dates: 'Mar 2024',
-    meta: '',
-    t0: 2024 + M(3), t1: 2024 + M(3), level: 1,
-    lead: 'Rallied Coinbase Wallet, MetaMask, Safe, Uniswap, Rainbow, Privy, and WalletConnect behind one standard — EIP-6963.',
-    points: [],
-    links: [
-      { label: 'zerion.io/blog — Unblock Crypto', href: 'https://zerion.io/blog/unblock-crypto-connect-all-dapps-to-all-wallets/' }
     ]
   },
   {
@@ -755,6 +827,7 @@ const BUILDER = [
     dates: 'Jun 2025',
     meta: '',
     t0: 2025 + M(6), t1: 2025 + M(6), level: 1, dy: -34,
+    what: 'A dynamic NFT collection.',
     lead: '',
     points: [],
     links: [
@@ -769,6 +842,7 @@ const BUILDER = [
     dates: 'Jan 2026 — onwards',
     meta: '',
     t0: 2026, t1: null, level: 2,
+    what: 'A map and timeline of popup villages around the world.',
     lead: 'A platform for popup villages and community coordination.',
     points: [],
     links: [
@@ -783,7 +857,8 @@ const BUILDER = [
     dates: 'Mar 2026 — onwards',
     meta: '',
     t0: 2026 + M(3), t1: null, level: 3, labelBelow: true,
-    lead: 'Onchain agreements between humans and AI agents.',
+    what: 'Agreements — for humans, and for agents.',
+    lead: 'Agreements for humans and agents.',
     points: [],
     links: [
       { label: 'handshake.monster', href: 'https://handshake.monster/' }
@@ -797,6 +872,7 @@ const BUILDER = [
     dates: 'Jun 2026 — onwards',
     meta: '',
     t0: 2026 + M(6), t1: null, level: 3, dy: 42, labelBelow: true,
+    what: 'An AI companion for couples, living inside the Telegram chat.',
     lead: 'AI companion for couples, living inside the Telegram chat.',
     points: [],
     links: [
@@ -832,7 +908,7 @@ const SERIES = {
     tick0: 2021,
     bio: 'Small tools, each a guess at what the future needs before it asks: onchain activity made readable across the web, a survival game with real stakes, dynamic NFTs, a platform for popup villages, agentic apps that hold agreements — between people, and now between people and machines. Pieces of one puzzle: what ordinary life looks like once software has intentions of its own.',
     ycap: 'domain',
-    fig: 'fig. 3 — tools, plotted',
+    fig: 'fig. 3 — tools, on the bench',
     src: 'source: the builder himself',
     aria: 'Tools and projects plotted against time. Horizontal axis is years 2021 to 2026; vertical axis is domain: crypto, tools, agentic apps.'
   }
@@ -1079,12 +1155,15 @@ function render(key) {
     });
   });
 
-  /* --- media is the shelf; the other series are plotted --- */
+  /* --- media is a shelf, tools is a bench of screens, career is plotted --- */
   const isMedia = key === 'media';
+  const isTools = key === 'builder';
   if (isMedia) buildShelf(S.roles);
-  document.querySelector('figure').hidden = isMedia;
-  entriesEl.hidden = isMedia;
+  if (isTools) buildLab([...S.roles].sort((a, b) => a.t0 - b.t0));
+  document.querySelector('figure').hidden = isMedia || isTools;
+  entriesEl.hidden = isMedia || isTools;
   shelfEl.hidden = !isMedia;
+  labEl.hidden = !isTools;
   hidePeek();
 }
 
@@ -1095,6 +1174,31 @@ function toggle(id) {
   const isOpen = open === id;
   if (open) setOpen(open, false);
   if (!isOpen) { setOpen(id, true); open = id; } else { open = null; }
+}
+
+/* ------------------------------------------------------------------ *
+ * tools bench — each app running on an old laptop screen
+ * ------------------------------------------------------------------ */
+const labEl = document.getElementById('lab');
+
+function buildLab(roles) {
+  const screens = window.SCREENS || {};
+  labEl.innerHTML = '<div class="bench">' + roles.map(r => {
+    const href = r.links && r.links.length ? r.links[0].href : null;
+    return `
+      <${href ? 'a' : 'div'} class="mac" data-id="${r.id}"
+        ${href ? `href="${href}" target="_blank" rel="noopener"` : ''}>
+        <span class="lid">
+          <span class="screen">${screens[r.id] ? `<img src="${screens[r.id]}" alt="${esc(r.org)} screenshot">` : ''}</span>
+        </span>
+        <span class="base"></span>
+        <span class="mac-cap">
+          <b>${esc(r.org)}</b>
+          <span class="what">${esc(r.what || r.lead || r.role)}</span>
+          <span class="when">${esc(r.dates)}</span>
+        </span>
+      </${href ? 'a' : 'div'}>`;
+  }).join('') + '</div>';
 }
 
 function setOpen(id, on) {
