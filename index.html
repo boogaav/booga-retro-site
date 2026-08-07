@@ -598,7 +598,7 @@
   <nav class="switcher" role="tablist" aria-label="Series">
     <button class="tab"    data-mode="career"  role="tab" aria-selected="false">Career</button>
     <button class="tab on" data-mode="media"   role="tab" aria-selected="true">Media</button>
-    <button class="tab"    data-mode="builder" role="tab" aria-selected="false">Tools</button>
+    <button class="tab"    data-mode="builder" role="tab" aria-selected="false">Tools for humanity</button>
   </nav>
 
   <section class="shelf" id="shelf" hidden aria-label="Media shelf"></section>
@@ -852,13 +852,13 @@ const MEDIA = [
     dates: 'Jul 2026 — onwards',
     meta: '',
     t0: 2026 + M(7), t1: null, level: 3, labelBelow: true,
-    shelf: 'tape', trailer: 'Zc1nBlPuatU',
+    shelf: 'tape', trailer: 'Tc51f2B3VHk', start: 120,
     lead: '“Who Wants to Be a Crypto Millionaire” — live game show.',
     points: [],
     links: [
       { label: 'cryptomillionaire.show', href: 'https://www.cryptomillionaire.show/' }
     ],
-    embed: 'https://www.youtube.com/embed/Zc1nBlPuatU'
+    embed: 'https://www.youtube.com/embed/Tc51f2B3VHk?start=120'
   }
 ];
 
@@ -992,9 +992,9 @@ const SERIES = {
     tick0: 2021,
     bio: 'Small tools, each a guess at what the future needs before it asks: onchain activity made readable across the web, a survival game with real stakes, dynamic NFTs, a platform for popup villages, agentic apps that hold agreements — between people, and now between people and machines. Pieces of one puzzle: what ordinary life looks like once software has intentions of its own.',
     ycap: 'domain',
-    fig: 'fig. 3 — tools, on the bench',
+    fig: 'fig. 3 — tools for humanity, on the bench',
     src: 'source: the builder himself',
-    aria: 'Tools and projects plotted against time. Horizontal axis is years 2021 to 2026; vertical axis is domain: crypto, tools, agentic apps.'
+    aria: 'Tools for humanity, plotted against time. Horizontal axis is years 2021 to 2026; vertical axis is domain: crypto, tools, agentic apps.'
   }
 };
 
@@ -1430,7 +1430,7 @@ function openModal(r) {
 
   if (r.trailer) {
     modalBody.innerHTML =
-      `<div class="frame"><iframe src="https://www.youtube-nocookie.com/embed/${r.trailer}?autoplay=1&rel=0"
+      `<div class="frame"><iframe src="https://www.youtube-nocookie.com/embed/${r.trailer}?autoplay=1&rel=0${r.start ? '&start=' + r.start : ''}"
         title="${esc(r.org)} trailer" allow="accelerometer; autoplay; encrypted-media; picture-in-picture"
         allowfullscreen></iframe></div>` + note;
   } else if (r.tweet) {

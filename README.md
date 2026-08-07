@@ -23,7 +23,7 @@ Clicking a segment expands its card; hovering shows a preview.
 |---------|---------------------|------|
 | Career  | scope of ownership  | 2017 |
 | Media   | *(shelf, not plotted)* | —    |
-| Tools   | *(bench, not plotted)* | —    |
+| Tools for humanity | *(bench, not plotted)* | — |
 
 Pulsing accent dots on the Career plot mark the milestones.
 
