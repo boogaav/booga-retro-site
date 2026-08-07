@@ -33,7 +33,8 @@ real screenshot of it running, and links out. Screens live in `window.SCREENS`.
 **Media is the landing view and is a shelf, not a plot**: the video projects are
 VHS cassettes — click one to play its trailer and reach its links — and the books
 are physical books that preview on hover and link out, and the AI-made videos are film
-strips that open their trailer (YouTube inline, Instagram via its own embed). Cover art comes from the
+strips that open their trailer (YouTube inline, Instagram via its own embed). A Music
+section embeds the Spotify artist player. Cover art comes from the
 real thing: YouTube thumbnails for the shows, the printed cover for Jackie Chain
 Adventure. Career and Tools are plotted as described above.
 
