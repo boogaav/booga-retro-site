@@ -927,6 +927,21 @@ const BUILDER = [
     ]
   },
   {
+    id: 'gravity-lab',
+    org: 'Gravity Lab',
+    role: 'N-body simulator',
+    short: 'SIMULATOR',
+    dates: 'Jul 2026 — onwards',
+    meta: '',
+    t0: 2026 + M(7) + 0.03, t1: null, level: 2,
+    what: 'Real N-body gravity in the browser — nothing scripted.',
+    lead: 'An N-body encounter simulator: launch bodies, publish the worlds you find.',
+    points: [],
+    links: [
+      { label: 'gravitylab.booga.me', href: 'https://gravitylab.booga.me/' }
+    ]
+  },
+  {
     id: 'villedge',
     org: 'Villedge Tech',
     role: 'Popup-village platform',
@@ -1304,7 +1319,7 @@ function render(key) {
   const isMedia = key === 'media';
   const isTools = key === 'builder';
   if (isMedia) buildShelf(S.roles);
-  if (isTools) buildLab([...S.roles].sort((a, b) => a.t0 - b.t0));
+  if (isTools) buildLab([...S.roles].sort((a, b) => b.t0 - a.t0));   // newest first
   document.querySelector('figure').hidden = isMedia || isTools;
   entriesEl.hidden = isMedia || isTools;
   shelfEl.hidden = !isMedia;
