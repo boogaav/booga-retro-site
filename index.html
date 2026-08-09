@@ -723,6 +723,10 @@ const CAREER = [
       'Held technical conversations on API integration, model and architecture choices, and coverage priorities directly with founders and engineering teams.',
       'Initiated Unblock Crypto: sourced and rallied Coinbase Wallet, MetaMask, Safe, Uniswap, Rainbow, Privy, and WalletConnect behind a shared standard (EIP-6963).',
       'Tracked partner progress against launch milestones and ecosystem KPIs, reporting outcomes to leadership.'
+    ],
+    /* boards that show the actual mapping work; `img` gives them a hover preview */
+    links: [
+      { label: 'ZERO Ecosystem — board', href: 'https://miro.com/app/board/uXjVKuyx1sU=/', img: 'zero-eco' }
     ]
   },
   {
@@ -1079,6 +1083,34 @@ function showPeek(r, g) {
 }
 function hidePeek() { peek.classList.remove('show'); }
 
+/* a link carrying data-proof shows that image on hover — used for the boards
+   that evidence the ecosystem work */
+function showProof(key, label, el) {
+  const img = (window.PROOFS || {})[key];
+  if (!img) return;
+  peek.innerHTML = `<img src="${img}" alt=""><span class="pk-t">${label}</span>`;
+  peek.classList.add('show');
+  const b = el.getBoundingClientRect();
+  requestAnimationFrame(() => {
+    const pw = peek.offsetWidth, ph = peek.offsetHeight;
+    let left = Math.max(8, Math.min(b.left, innerWidth - pw - 8));
+    let top = b.top - ph - 12;
+    if (top < 8) top = b.bottom + 12;
+    peek.style.left = left + 'px';
+    peek.style.top = top + 'px';
+  });
+}
+
+function wireProofs(scope) {
+  scope.querySelectorAll('a[data-proof]').forEach(a => {
+    const label = a.textContent.replace(/\s*↗\s*$/, '').trim();
+    a.addEventListener('mouseenter', () => showProof(a.dataset.proof, label, a));
+    a.addEventListener('mouseleave', hidePeek);
+    a.addEventListener('focus', () => showProof(a.dataset.proof, label, a));
+    a.addEventListener('blur', hidePeek);
+  });
+}
+
 /* ------------------------------------------------------------------ *
  * full redraw for one series: axes, grid, nodes, cards
  * ------------------------------------------------------------------ */
@@ -1248,7 +1280,7 @@ function render(key) {
             `<li>${m.href ? `<a href="${m.href}" target="_blank" rel="noopener">${m.label} ↗</a>` : m.label}</li>`).join('')}</ul>` : ''}
           ${r.points && r.points.length ? `<ul>${r.points.map(p => `<li>${p}</li>`).join('')}</ul>` : ''}
           ${r.links && r.links.length ? `<ul class="links">${r.links.map(l =>
-            `<li><a href="${l.href}" target="_blank" rel="noopener">${l.label} ↗</a></li>`).join('')}</ul>` : ''}
+            `<li><a href="${l.href}" target="_blank" rel="noopener"${l.img ? ` data-proof="${l.img}"` : ''}>${l.label} ↗</a></li>`).join('')}</ul>` : ''}
           ${r.tweets && r.tweets.length ? `<div class="tweets">${r.tweets.map(u =>
             `<blockquote class="twitter-tweet" data-dnt="true" data-conversation="none" data-theme="${matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light'}"><a href="${u}">${u.replace('https://twitter.com/', 'x.com/')}</a></blockquote>`).join('')}</div>` : ''}
           ${r.embed ? `<div class="embed"><iframe data-src="${r.embed}" title="${r.org}" loading="lazy"
@@ -1258,6 +1290,7 @@ function render(key) {
       </div>`;
     entriesEl.appendChild(wrap);
     cards[r.id] = wrap;
+    wireProofs(wrap);
 
     const head = wrap.querySelector('.entry-head');
     head.addEventListener('click', () => toggle(r.id));
