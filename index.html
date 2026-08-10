@@ -562,6 +562,8 @@
     display:flex; flex-wrap:wrap; gap:4px 22px;
   }
 
+  .swipe-hint{display:none}
+
   @media (max-width:600px){
     .wrap{padding:40px 20px 72px}
     header{grid-template-columns:1fr; row-gap:0}
@@ -569,6 +571,28 @@
     .contact{grid-column:1}
     .entry-head{grid-template-columns:1fr 22px; gap:0 16px}
     .when{grid-column:1/-1; margin-bottom:6px}
+
+    /* the plot keeps its own width and scrolls — say so, since there's no hover to hint it */
+    .swipe-hint{display:inline; color:var(--accent)}
+
+    /* shelf and bench fill the phone instead of sitting in a desktop-width column */
+    .rack{gap:28px 14px}
+    .vhs, .film{width:100%}
+    .book{width:calc(50% - 7px)}
+    .bench{grid-template-columns:1fr; gap:34px}
+    .shelf-h{margin-bottom:16px}
+    .shelf-h:not(:first-child){margin-top:44px}
+
+    /* give the modal the whole screen — 24px of chrome each side wastes a phone */
+    .modal{padding:10px}
+    .modal-body{padding:10px}
+    .modal-head{padding:10px 12px}
+
+    /* comfortable thumb targets */
+    .tab{padding-bottom:12px}
+    .icon-btn{width:38px; height:38px}
+    .fan{gap:0}
+    .socials:hover .fan, .socials:focus-within .fan, .socials.open .fan{width:152px}
   }
 </style>
 </head>
@@ -627,6 +651,7 @@
       <span><i>x</i> &nbsp;— time, in years</span>
       <span><i>y</i> &nbsp;— <span id="ycap">scope of ownership</span></span>
       <span><b>click</b> a segment to expand it</span>
+      <span class="swipe-hint">⇄ drag the plot sideways</span>
     </figcaption>
   </figure>
 
@@ -912,6 +937,21 @@ const BUILDER = [
     ]
   },
   {
+    id: 'passport',
+    org: 'Passport Power Map',
+    role: 'Travel map',
+    short: 'MAP',
+    dates: 'Jul 2026 — onwards',
+    meta: '',
+    t0: 2026 + M(7) + 0.01, t1: null, level: 2,
+    what: 'Where can your passport take you?',
+    lead: 'Pick a passport and watch the world colour in by visa requirement.',
+    points: [],
+    links: [
+      { label: 'passport.booga.me', href: 'https://passport.booga.me/' }
+    ]
+  },
+  {
     id: 'chainstalker',
     org: 'Chainstalker',
     role: 'Tool',
@@ -1019,6 +1059,11 @@ const VIDEOS = [
     id: 'vibe', title: 'Vibe With Me', sub: 'Trailer',
     dates: 'May 2026', kind: 'yt', vid: '0ogf-bWqLO4',
     link: { label: 'youtube.com', href: 'https://www.youtube.com/watch?v=0ogf-bWqLO4' }
+  },
+  {
+    id: 'agi', title: 'Crypto Millionaire', sub: '“What will AGI do to humanity? He picked D” — trailer',
+    dates: 'Aug 2026', kind: 'yt', vid: 'jgpblY0BOKQ',
+    link: { label: 'youtube.com', href: 'https://www.youtube.com/watch?v=jgpblY0BOKQ' }
   },
   {
     id: 'berlin', title: 'Berlin Calling', sub: 'Music video',
