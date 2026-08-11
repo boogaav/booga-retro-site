@@ -393,7 +393,11 @@
   .modal-x:hover{color:var(--accent)}
   .modal-x:focus-visible{outline:1px solid var(--accent); outline-offset:2px}
   .modal-body{padding:14px}
+  .modal-box.wide{width:min(1140px, 100%)}
   .modal-body .frame{width:100%; aspect-ratio:16/9; background:var(--grid); border:1px solid var(--rule)}
+  /* live apps want more height than a video */
+  .modal-body .frame.app{aspect-ratio:16/10; background:var(--paper)}
+  @media (max-width:600px){ .modal-body .frame.app{aspect-ratio:3/4} }
   .modal-body .frame iframe{display:block; width:100%; height:100%; border:0}
   .modal-body .twitter-tweet{margin:0 auto !important}
   .modal-note{
@@ -603,10 +607,9 @@
     <img class="portrait" src="portrait.webp" width="76" height="76"
          alt="BOOGA" decoding="async">
     <h1>BOOGA</h1>
-    <!-- swapped per series on render; this is the Media copy, which loads first -->
+    <!-- swapped per series on render; this is the Tools copy, which loads first -->
     <p class="standfirst">
-      From a drop of water, you should be able to imagine ice, steam, icebergs, rain, oceans,
-      and waterfalls.
+      Small tools, each a guess at what the future needs before it asks.
     </p>
     <ul class="contact">
       <li class="socials" id="socials">
@@ -634,8 +637,8 @@
 
   <nav class="switcher" role="tablist" aria-label="Series">
     <button class="tab"    data-mode="career"  role="tab" aria-selected="false">Career</button>
-    <button class="tab on" data-mode="media"   role="tab" aria-selected="true">Media</button>
-    <button class="tab"    data-mode="builder" role="tab" aria-selected="false">Tools</button>
+    <button class="tab"    data-mode="media"   role="tab" aria-selected="false">Media</button>
+    <button class="tab on" data-mode="builder" role="tab" aria-selected="true">Tools</button>
   </nav>
 
   <section class="shelf" id="shelf" hidden aria-label="Media shelf"></section>
@@ -675,6 +678,27 @@
   </div>
 </div>
 
+<script>
+/* ------------------------------------------------------------------ *
+ * Microsoft Clarity. Paste the project id from clarity.microsoft.com
+ * below and the tag starts loading; empty means no tracking at all.
+ * ------------------------------------------------------------------ */
+const CLARITY_ID = '';
+
+if (CLARITY_ID) {
+  (function (c, l, a, r, i, t, y) {
+    c[a] = c[a] || function () { (c[a].q = c[a].q || []).push(arguments); };
+    t = l.createElement(r); t.async = 1; t.src = 'https://www.clarity.ms/tag/' + i;
+    y = l.getElementsByTagName(r)[0]; y.parentNode.insertBefore(t, y);
+  })(window, document, 'clarity', 'script', CLARITY_ID);
+}
+
+/* One event name per thing, so Clarity's dashboard shows a click count
+   per tool rather than one lumped total. No-ops until the id is set. */
+function track(name) {
+  try { if (window.clarity) window.clarity('event', name); } catch (e) { /* never break the page for analytics */ }
+}
+</script>
 <script src="previews.js"></script>
 <script>
 /* ------------------------------------------------------------------ *
@@ -950,6 +974,7 @@ const BUILDER = [
   },
   {
     id: 'passport',
+    embed: true,
     org: 'Passport Power Map',
     role: 'Travel map',
     short: 'MAP',
@@ -980,6 +1005,7 @@ const BUILDER = [
   },
   {
     id: 'reading-room',
+    embed: true,
     org: 'Reading Room',
     role: 'Reader',
     short: 'READER',
@@ -987,14 +1013,15 @@ const BUILDER = [
     meta: '',
     t0: 2026 + M(8) + 0.04, t1: null, level: 2,
     what: 'Wikipedia, if it used AI.',
-    lead: 'Turns a Wikipedia article into a designed volume — apparatus, chapters, end notes.',
+    lead: 'Any Wikipedia article, rebound as a book — its sections become chapters, its infobox becomes apparatus.',
     points: [],
     links: [
-      { label: 'readingroom.booga.me', href: 'https://readingroom.booga.me/read/Battle_of_Stalingrad' }
+      { label: 'readingroom.booga.me', href: 'https://readingroom.booga.me/' }
     ]
   },
   {
     id: 'gravity-lab',
+    embed: true,
     org: 'Gravity Lab',
     role: 'N-body simulator',
     short: 'SIMULATOR',
@@ -1010,6 +1037,7 @@ const BUILDER = [
   },
   {
     id: 'villedge',
+    embed: true,
     org: 'Villedge Tech',
     role: 'Popup-village platform',
     short: '',
@@ -1025,6 +1053,7 @@ const BUILDER = [
   },
   {
     id: 'handshake',
+    embed: true,
     org: 'Handshake',
     role: 'Agentic app',
     short: 'AGENTIC APP',
@@ -1040,6 +1069,7 @@ const BUILDER = [
   },
   {
     id: 'third-wheel',
+    embed: true,
     org: 'Third Wheel',
     role: 'Agentic app',
     short: 'AGENTIC APP',
@@ -1191,6 +1221,7 @@ function showProof(key, label, el) {
 function wireProofs(scope) {
   scope.querySelectorAll('a[data-proof]').forEach(a => {
     const label = a.textContent.replace(/\s*↗\s*$/, '').trim();
+    a.addEventListener('click', () => track('proof:' + a.dataset.proof));
     a.addEventListener('mouseenter', () => showProof(a.dataset.proof, label, a));
     a.addEventListener('mouseleave', hidePeek);
     a.addEventListener('focus', () => showProof(a.dataset.proof, label, a));
@@ -1432,6 +1463,18 @@ function buildLab(roles) {
         </span>
       </${href ? 'a' : 'div'}>`;
   }).join('') + '</div>';
+
+  labEl.querySelectorAll('.mac').forEach(m => {
+    const r = roles.find(x => x.id === m.dataset.id);
+    m.addEventListener('click', e => {
+      track('tool:' + m.dataset.id);
+      /* X profiles refuse to be framed, so those keep plain link behaviour.
+         Modifier-clicks always go straight to the site. */
+      if (!r.embed || e.metaKey || e.ctrlKey || e.shiftKey || e.altKey) return;
+      e.preventDefault();
+      openApp(r);
+    });
+  });
 }
 
 function setOpen(id, on) {
@@ -1542,16 +1585,17 @@ function buildShelf(roles) {
   /* tapes open the trailer; books just preview on hover and link out */
   shelfEl.querySelectorAll('.vhs').forEach(btn => {
     const r = roles.find(x => x.id === btn.dataset.id);
-    btn.addEventListener('click', () => openModal(r));
+    btn.addEventListener('click', () => { track('tape:' + r.id); openModal(r); });
     btn.addEventListener('mouseenter', () => showPeek(r, btn));
     btn.addEventListener('mouseleave', hidePeek);
   });
   shelfEl.querySelectorAll('.film').forEach(btn => {
     const v = VIDEOS.find(x => x.id === btn.dataset.id);
-    btn.addEventListener('click', () => openVideo(v));
+    btn.addEventListener('click', () => { track('film:' + v.id); openVideo(v); });
   });
   shelfEl.querySelectorAll('.book').forEach(a => {
     const r = roles.find(x => x.id === a.dataset.id);
+    a.addEventListener('click', () => track('book:' + r.id));
     a.addEventListener('mouseenter', () => showPeek(r, a));
     a.addEventListener('mouseleave', hidePeek);
     a.addEventListener('focus', () => showPeek(r, a));
@@ -1594,6 +1638,23 @@ function openModal(r) {
   modal.querySelector('.modal-x').focus();
 }
 
+/* a tool card opens the live app in the modal, so you can actually click around it */
+function openApp(r) {
+  hidePeek();
+  lastFocus = document.activeElement;
+  modalTitle.textContent = r.org;
+  const link = r.links && r.links[0];
+  modalBody.innerHTML =
+    `<div class="frame app"><iframe src="${link.href}" title="${esc(r.org)}"
+       allow="accelerometer; autoplay; clipboard-write; encrypted-media; fullscreen; picture-in-picture"
+       allowfullscreen></iframe></div>` +
+    `<p class="modal-note"><a href="${link.href}" target="_blank" rel="noopener">${esc(link.label)} ↗</a></p>`;
+  modal.hidden = false;
+  modal.querySelector('.modal-box').classList.add('wide');
+  document.body.style.overflow = 'hidden';
+  modal.querySelector('.modal-x').focus();
+}
+
 /* AI videos: YouTube plays inline; Instagram gets its own portrait embed */
 function openVideo(v) {
   hidePeek();
@@ -1613,6 +1674,7 @@ function openVideo(v) {
 
 function closeModal() {
   modal.hidden = true;
+  modal.querySelector('.modal-box').classList.remove('wide');
   modalBody.innerHTML = '';          // stops playback
   document.body.style.overflow = '';
   if (lastFocus) lastFocus.focus();
@@ -1631,11 +1693,12 @@ document.querySelectorAll('.tab').forEach(btn => {
       b.classList.toggle('on', on);
       b.setAttribute('aria-selected', String(on));
     });
+    track('tab:' + btn.dataset.mode);
     render(btn.dataset.mode);
   });
 });
 
-render('media');
+render('builder');
 
 /* ------------------------------------------------------------------ *
  * socials: hover fans them out, but touch has no hover — so tap toggles
