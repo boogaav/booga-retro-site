@@ -1129,7 +1129,7 @@ const SERIES = {
     levels: ['reality show', 'books', 'live show'],
     roles: MEDIA,
     tick0: 2023,
-    bio: 'From a drop of water, you should be able to imagine ice, steam, icebergs, rain, oceans, and waterfalls.',
+    bio: 'A little creative studio that delivers creatives.',
     ycap: 'format',
     fig: 'fig. 2 — media, shelved',
     src: 'source: the host himself',
@@ -1522,11 +1522,13 @@ function buildShelf(roles) {
   const covers = window.COVERS || {};
   const tapes = roles.filter(r => r.shelf === 'tape');
   const books = roles.filter(r => r.shelf === 'book');
-  let html = '';
+
+  /* sections are assembled at the end, so the running order lives in one place */
+  let tapesHtml = '', booksHtml = '', creativesHtml = '', musicHtml = '';
 
   if (tapes.length) {
-    html += '<h2 class="shelf-h">Tapes</h2><div class="rack">';
-    html += tapes.map(r => `
+    tapesHtml += '<h2 class="shelf-h">Tapes</h2><div class="rack">';
+    tapesHtml += tapes.map(r => `
       <button class="vhs" data-id="${r.id}" aria-label="${esc(r.org)} — play trailer">
         <span class="shell">
           <span class="label">
@@ -1538,12 +1540,12 @@ function buildShelf(roles) {
         </span>
         <span class="vhs-cap">${esc(r.short || r.role)}</span>
       </button>`).join('');
-    html += '</div>';
+    tapesHtml += '</div>';
   }
 
   if (books.length) {
-    html += '<h2 class="shelf-h">Interactive books</h2><div class="rack">';
-    html += books.map(r => {
+    booksHtml += '<h2 class="shelf-h">Interactive books</h2><div class="rack">';
+    booksHtml += books.map(r => {
       const href = r.links && r.links.length ? r.links[0].href : null;
       return `
       <a class="book" data-id="${r.id}" ${href ? `href="${href}" target="_blank" rel="noopener"` : 'href="#" role="button"'}>
@@ -1551,13 +1553,13 @@ function buildShelf(roles) {
         <span class="book-cap"><b>${esc(r.org)}</b>${esc(r.dates)}</span>
       </a>`;
     }).join('');
-    html += '</div>';
+    booksHtml += '</div>';
   }
 
   /* AI-made videos, as film strips */
   const films = window.FILMS || {};
-  html += '<h2 class="shelf-h">B&amp;B Production <span class="hsub">AI Creatives</span></h2><div class="rack">';
-  html += VIDEOS.map(v => `
+  creativesHtml += '<h2 class="shelf-h">B&amp;B Production <span class="hsub">AI Creatives</span></h2><div class="rack">';
+  creativesHtml += VIDEOS.map(v => `
     <button class="film" data-id="${v.id}" aria-label="${esc(v.title)} — play">
       <span class="strip">
         <span class="perf"></span>
@@ -1572,15 +1574,16 @@ function buildShelf(roles) {
         ${v.dates ? `<span class="when">${esc(v.dates)}</span>` : ''}
       </span>
     </button>`).join('');
-  html += '</div>';
+  creativesHtml += '</div>';
 
   /* music — the Spotify artist player, embedded straight in */
-  html += '<h2 class="shelf-h">Music</h2>' +
+  musicHtml += '<h2 class="shelf-h">Music</h2>' +
     '<div class="music"><iframe src="https://open.spotify.com/embed/artist/6fvDdlMvNQDuH67Ov1bsxN?utm_source=generator" ' +
     'title="BOOGA on Spotify" width="100%" height="352" frameborder="0" loading="lazy" ' +
     'allow="autoplay; clipboard-write; encrypted-media; fullscreen; picture-in-picture" allowfullscreen></iframe></div>';
 
-  shelfEl.innerHTML = html;
+  /* running order: creatives lead, the shows sit just above the music */
+  shelfEl.innerHTML = creativesHtml + booksHtml + tapesHtml + musicHtml;
 
   /* tapes open the trailer; books just preview on hover and link out */
   shelfEl.querySelectorAll('.vhs').forEach(btn => {
