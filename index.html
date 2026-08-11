@@ -684,6 +684,18 @@ const M = m => (m - 1) / 12;            // month number -> decimal year fraction
 
 const CAREER = [
   {
+    id: 'cic',
+    org: 'CIC',
+    role: 'Scrum Master',
+    short: 'SCRUM MASTER',
+    dates: '2016 — 2017',
+    meta: '',
+    t0: 2016, t1: 2017 - M(2), level: 1,     // ends a month short so it doesn't touch Cryptonomos
+    labelBelow: true,                        // above the line it would collide with Cryptonomos
+    lead: 'Cyber Identity Card.',
+    points: []
+  },
+  {
     id: 'crypto-leo',
     org: 'Cryptonomos + Leonardo',
     role: 'Head of Business Development',
@@ -771,6 +783,17 @@ const CAREER = [
       'Sourced, selected, and backed a curated cohort of technical founders and builders through a Vietnam-based popup residency.',
       'Built Villedge Tech, a platform for popup villages and community coordination — practical builder activation and curated network design.'
     ]
+  },
+  {
+    id: 'pm',
+    org: 'Project Manager',
+    role: '',
+    short: '',
+    dates: '2025 — 2026',
+    meta: '',
+    t0: 2025, t1: 2026, level: 1,
+    lead: '',
+    points: []
   },
   {
     id: 'zoolini',
@@ -1076,12 +1099,12 @@ const SERIES = {
   career: {
     levels: ['deals', 'ecosystem', 'company'],
     roles: CAREER,
-    tick0: 2017,
+    tick0: 2016,
     bio: 'Physicist by training (MSc), ecosystem operator by heart, founder by mindset.',
     ycap: 'scope of ownership',
     fig: 'fig. 1 — career, plotted',
     src: 'source: CV, 2026',
-    aria: 'Career plotted against time. Horizontal axis is years 2017 to 2026; vertical axis is scope of ownership, from deals to ecosystem to company.'
+    aria: 'Career plotted against time. Horizontal axis is years 2016 to 2026; vertical axis is scope of ownership, from deals to ecosystem to company.'
   },
   media: {
     levels: ['reality show', 'books', 'live show'],
