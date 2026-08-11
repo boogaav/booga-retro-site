@@ -789,9 +789,9 @@ const CAREER = [
     org: 'Project Manager',
     role: '',
     short: '',
-    dates: '2025 — 2026',
+    dates: '2015 — 2016',
     meta: '',
-    t0: 2025, t1: 2026, level: 1,
+    t0: 2015, t1: 2016 - M(2), level: 1,     // ends a month short so it doesn't touch CIC
     lead: '',
     points: []
   },
@@ -1099,12 +1099,12 @@ const SERIES = {
   career: {
     levels: ['deals', 'ecosystem', 'company'],
     roles: CAREER,
-    tick0: 2016,
+    tick0: 2015,
     bio: 'Physicist by training (MSc), ecosystem operator by heart, founder by mindset.',
     ycap: 'scope of ownership',
     fig: 'fig. 1 — career, plotted',
     src: 'source: CV, 2026',
-    aria: 'Career plotted against time. Horizontal axis is years 2016 to 2026; vertical axis is scope of ownership, from deals to ecosystem to company.'
+    aria: 'Career plotted against time. Horizontal axis is years 2015 to 2026; vertical axis is scope of ownership, from deals to ecosystem to company.'
   },
   media: {
     levels: ['reality show', 'books', 'live show'],
@@ -1262,7 +1262,8 @@ function render(key) {
 
   /* --- "now" marker --- */
   svg.appendChild(el('line', { class: 'now-line', x1: x(now), y1: PAD.t - 6, x2: x(now), y2: axisY }));
-  svg.appendChild(el('text', { class: 'now-label', x: x(now) - 6, y: PAD.t + 2, 'text-anchor': 'end' }, 'NOW'));
+  /* sits above the top row's labels — at PAD.t it collided with "Proof of Retreat FOUNDER" */
+  svg.appendChild(el('text', { class: 'now-label', x: x(now) - 6, y: PAD.t - 12, 'text-anchor': 'end' }, 'NOW'));
 
   /* --- empty-series note --- */
   if (S.note) {
