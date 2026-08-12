@@ -678,12 +678,14 @@
   </div>
 </div>
 
+<!-- Google Analytics -->
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-RPN2Y814QN"></script>
 <script>
 /* ------------------------------------------------------------------ *
- * Microsoft Clarity. Paste the project id from clarity.microsoft.com
- * below and the tag starts loading; empty means no tracking at all.
+ * analytics — Microsoft Clarity + GA4. Blank either id to switch it off.
  * ------------------------------------------------------------------ */
-const CLARITY_ID = '';
+const CLARITY_ID = 'y1a4eqmrfw';
+const GA_ID = 'G-RPN2Y814QN';
 
 if (CLARITY_ID) {
   (function (c, l, a, r, i, t, y) {
@@ -693,10 +695,22 @@ if (CLARITY_ID) {
   })(window, document, 'clarity', 'script', CLARITY_ID);
 }
 
-/* One event name per thing, so Clarity's dashboard shows a click count
-   per tool rather than one lumped total. No-ops until the id is set. */
-function track(name) {
-  try { if (window.clarity) window.clarity('event', name); } catch (e) { /* never break the page for analytics */ }
+window.dataLayer = window.dataLayer || [];
+function gtag() { dataLayer.push(arguments); }
+if (GA_ID) { gtag('js', new Date()); gtag('config', GA_ID); }
+
+/* One distinct event per item, so both dashboards show a count per tool
+   rather than one lumped total. GA4 also gets the parts as parameters,
+   so they can be broken down as custom dimensions later. */
+function track(kind, id) {
+  const label = id ? kind + ':' + id : kind;
+  try { if (window.clarity) window.clarity('event', label); } catch (e) { /* analytics must never break the page */ }
+  try {
+    if (window.gtag && GA_ID) {
+      const name = (id ? kind + '_' + id : kind).replace(/[^a-z0-9_]+/gi, '_').slice(0, 40);
+      gtag('event', name, { item_kind: kind, item_id: id || '' });
+    }
+  } catch (e) { /* ditto */ }
 }
 </script>
 <script src="previews.js"></script>
@@ -1221,7 +1235,7 @@ function showProof(key, label, el) {
 function wireProofs(scope) {
   scope.querySelectorAll('a[data-proof]').forEach(a => {
     const label = a.textContent.replace(/\s*↗\s*$/, '').trim();
-    a.addEventListener('click', () => track('proof:' + a.dataset.proof));
+    a.addEventListener('click', () => track('proof', a.dataset.proof));
     a.addEventListener('mouseenter', () => showProof(a.dataset.proof, label, a));
     a.addEventListener('mouseleave', hidePeek);
     a.addEventListener('focus', () => showProof(a.dataset.proof, label, a));
@@ -1467,7 +1481,7 @@ function buildLab(roles) {
   labEl.querySelectorAll('.mac').forEach(m => {
     const r = roles.find(x => x.id === m.dataset.id);
     m.addEventListener('click', e => {
-      track('tool:' + m.dataset.id);
+      track('tool', m.dataset.id);
       /* X profiles refuse to be framed, so those keep plain link behaviour.
          Modifier-clicks always go straight to the site. */
       if (!r.embed || e.metaKey || e.ctrlKey || e.shiftKey || e.altKey) return;
@@ -1588,17 +1602,17 @@ function buildShelf(roles) {
   /* tapes open the trailer; books just preview on hover and link out */
   shelfEl.querySelectorAll('.vhs').forEach(btn => {
     const r = roles.find(x => x.id === btn.dataset.id);
-    btn.addEventListener('click', () => { track('tape:' + r.id); openModal(r); });
+    btn.addEventListener('click', () => { track('tape', r.id); openModal(r); });
     btn.addEventListener('mouseenter', () => showPeek(r, btn));
     btn.addEventListener('mouseleave', hidePeek);
   });
   shelfEl.querySelectorAll('.film').forEach(btn => {
     const v = VIDEOS.find(x => x.id === btn.dataset.id);
-    btn.addEventListener('click', () => { track('film:' + v.id); openVideo(v); });
+    btn.addEventListener('click', () => { track('film', v.id); openVideo(v); });
   });
   shelfEl.querySelectorAll('.book').forEach(a => {
     const r = roles.find(x => x.id === a.dataset.id);
-    a.addEventListener('click', () => track('book:' + r.id));
+    a.addEventListener('click', () => track('book', r.id));
     a.addEventListener('mouseenter', () => showPeek(r, a));
     a.addEventListener('mouseleave', hidePeek);
     a.addEventListener('focus', () => showPeek(r, a));
@@ -1696,7 +1710,7 @@ document.querySelectorAll('.tab').forEach(btn => {
       b.classList.toggle('on', on);
       b.setAttribute('aria-selected', String(on));
     });
-    track('tab:' + btn.dataset.mode);
+    track('tab', btn.dataset.mode);
     render(btn.dataset.mode);
   });
 });
