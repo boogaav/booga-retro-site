@@ -371,6 +371,8 @@
     font-family:var(--mono); font-size:10px; letter-spacing:0.08em; text-transform:uppercase;
     color:var(--faint);
   }
+  /* open count — blank until the counter service answers, so it never shows a bare 0 */
+  .mac-cap .opens{color:var(--accent); opacity:.75}
 
   /* ---------- video modal ---------- */
   .modal[hidden]{display:none}
@@ -1491,6 +1493,40 @@ function toggle(id) {
  * ------------------------------------------------------------------ */
 const labEl = document.getElementById('lab');
 
+/* ------------------------------------------------------------------ *
+ * open counts, from the little counter service on Fly. If it's asleep
+ * or down the badges simply don't appear — nothing else is affected.
+ * ------------------------------------------------------------------ */
+const COUNTER = 'https://booga-counter.fly.dev';
+let openCounts = null;
+
+const countLabel = n => n ? ` · ${n} ${n === 1 ? 'open' : 'opens'}` : '';
+
+function renderCounts(scope) {
+  if (!openCounts) return;
+  scope.querySelectorAll('[data-count-for]').forEach(el => {
+    el.textContent = countLabel(openCounts[el.dataset.countFor] || 0);
+  });
+}
+
+async function paintCounts(scope) {
+  try {
+    if (!openCounts) openCounts = await fetch(COUNTER + '/counts', { cache: 'no-store' }).then(r => r.json());
+    renderCounts(scope);
+  } catch (e) { /* counter unreachable — leave the badges blank */ }
+}
+
+/* count the open, and move the number straight away rather than waiting */
+function countOpen(id) {
+  if (openCounts) { openCounts[id] = (openCounts[id] || 0) + 1; renderCounts(labEl); }
+  try {
+    fetch(COUNTER + '/hit/' + encodeURIComponent(id), { method: 'POST', keepalive: true })
+      .then(r => r.json())
+      .then(d => { if (d && typeof d.count === 'number' && openCounts) { openCounts[id] = d.count; renderCounts(labEl); } })
+      .catch(() => {});
+  } catch (e) { /* ignore */ }
+}
+
 function buildLab(roles) {
   const screens = window.SCREENS || {};
   labEl.innerHTML = '<div class="bench">' + roles.map(r => {
@@ -1505,15 +1541,18 @@ function buildLab(roles) {
         <span class="mac-cap">
           <b>${esc(r.org)}</b>
           <span class="what">${esc(r.what || r.lead || r.role)}</span>
-          <span class="when">${esc(r.dates)}</span>
+          <span class="when">${esc(r.dates)}<span class="opens" data-count-for="${r.id}"></span></span>
         </span>
       </${href ? 'a' : 'div'}>`;
   }).join('') + '</div>';
+
+  paintCounts(labEl);
 
   labEl.querySelectorAll('.mac').forEach(m => {
     const r = roles.find(x => x.id === m.dataset.id);
     m.addEventListener('click', e => {
       track('tool', m.dataset.id);
+      countOpen(m.dataset.id);
       /* X profiles refuse to be framed, so those keep plain link behaviour.
          Modifier-clicks always go straight to the site. */
       if (!r.embed || e.metaKey || e.ctrlKey || e.shiftKey || e.altKey) return;
