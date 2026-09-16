@@ -2,7 +2,9 @@
 <html lang="en">
 <head>
 <meta charset="utf-8">
-<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="theme-color" content="#fbfaf7" media="(prefers-color-scheme: light)">
+<meta name="theme-color" content="#101215" media="(prefers-color-scheme: dark)">
 <title>BOOGA — career, plotted</title>
 <meta name="description" content="Physicist (MSc), ecosystem operator by heart, founder by mindset. Nine years crypto-native — partnerships, builder programs, and a few industry-wide initiatives.">
 
@@ -46,6 +48,7 @@
 
   *{box-sizing:border-box}
   html{-webkit-text-size-adjust:100%}
+  a, button{-webkit-tap-highlight-color:transparent}
   body{
     margin:0; background:var(--paper); color:var(--ink);
     font-family:var(--serif);
@@ -115,7 +118,10 @@
   .icon-btn.done .copied{opacity:1}
 
   /* ---------- series switcher ---------- */
-  .switcher{display:flex; gap:28px; margin:0 0 20px; border-bottom:1px solid var(--rule)}
+  .switcher{
+    display:flex; gap:28px; margin:0 0 20px; border-bottom:1px solid var(--rule);
+    position:sticky; top:0; z-index:15; background:var(--paper); padding-top:12px;
+  }
   .tab{
     all:unset; box-sizing:border-box; cursor:pointer;
     font-family:var(--mono); font-size:12px; letter-spacing:0.12em; text-transform:uppercase;
@@ -323,7 +329,7 @@
     box-shadow:inset 0 0 0 1px rgba(0,0,0,.55);
   }
   .screen img{
-    display:block; width:100%; aspect-ratio:16/10; object-fit:cover; object-position:top center;
+    display:block; width:100%; height:auto; aspect-ratio:16/10; object-fit:cover; object-position:top center;
   }
   /* faint glass sheen across the panel */
   .screen::after{
@@ -399,7 +405,6 @@
   .modal-body .frame{width:100%; aspect-ratio:16/9; background:var(--grid); border:1px solid var(--rule)}
   /* live apps want more height than a video */
   .modal-body .frame.app{aspect-ratio:16/10; background:var(--paper)}
-  @media (max-width:600px){ .modal-body .frame.app{aspect-ratio:3/4} }
   .modal-body .frame iframe{display:block; width:100%; height:100%; border:0}
   .modal-body .twitter-tweet{margin:0 auto !important}
   .modal-note{
@@ -410,7 +415,7 @@
 
   /* ---------- figure ---------- */
   figure{margin:0}
-  .plot-scroll{overflow-x:auto; overflow-y:hidden; -webkit-overflow-scrolling:touch}
+  .plot-scroll{overflow-x:auto; overflow-y:hidden; -webkit-overflow-scrolling:touch; overscroll-behavior-x:contain}
   .plot-scroll svg{display:block; min-width:720px; width:100%; height:auto}
   figcaption{
     margin-top:14px; padding-top:12px; border-top:1px solid var(--rule);
@@ -428,6 +433,8 @@
   .tick-label{font-family:var(--mono); font-size:10.5px; fill:var(--muted)}
   .axis-var{font-family:var(--serif); font-style:italic; font-size:15px; fill:var(--ink)}
   .level-label{font-family:var(--mono); font-size:10.5px; fill:var(--muted); letter-spacing:0.06em; text-transform:uppercase}
+  /* once the y axis scrolls off a phone screen, its band names ride along the left edge */
+  .level-label.pinned{text-anchor:start; paint-order:stroke; stroke:var(--paper); stroke-width:5px; stroke-linejoin:round}
   .seg-label{font-family:var(--serif); font-size:14.5px; fill:var(--ink)}
   .seg-role{font-family:var(--mono); font-size:9.5px; fill:var(--muted); letter-spacing:0.07em}
   .now-line{stroke:var(--faint); stroke-width:1; stroke-dasharray:2 4}
@@ -571,34 +578,67 @@
   .swipe-hint{display:none}
 
   @media (max-width:600px){
-    .wrap{padding:40px 20px 72px}
-    header{grid-template-columns:1fr; row-gap:0}
-    .portrait{grid-row:auto; width:64px; height:64px; margin-bottom:16px}
-    .contact{grid-column:1}
+    .wrap{padding:24px 16px 56px}
+
+    /* compact masthead: portrait beside the name, so the tabs sit above the fold */
+    header{grid-template-columns:52px 1fr; column-gap:14px; row-gap:0; margin-bottom:22px; align-items:center}
+    .portrait{grid-row:1; width:52px; height:52px}
+    h1{margin:0; font-size:28px}
+    .standfirst{grid-column:1 / -1; margin-top:14px; font-size:16px; line-height:1.5}
+    .contact{grid-column:1 / -1; margin-top:6px; margin-left:-9px}
     .entry-head{grid-template-columns:1fr 22px; gap:0 16px}
     .when{grid-column:1/-1; margin-bottom:6px}
 
+    /* the sticky tab bar runs edge to edge; tabs split the width, 44px tall for thumbs */
+    .switcher{margin:0 -16px 18px; padding:0 8px; gap:0}
+    .tab{flex:1; text-align:center; padding:15px 0 13px; font-size:12px}
+
     /* the plot keeps its own width and scrolls — say so, since there's no hover to hint it */
     .swipe-hint{display:inline; color:var(--accent)}
+    .plot-scroll{margin:0 -16px; padding:0 16px}
+    .plot-scroll.more-left{-webkit-mask-image:linear-gradient(90deg, transparent, #000 36px); mask-image:linear-gradient(90deg, transparent, #000 36px)}
+    .plot-scroll.more-right{-webkit-mask-image:linear-gradient(270deg, transparent, #000 36px); mask-image:linear-gradient(270deg, transparent, #000 36px)}
+    .plot-scroll.more-left.more-right{-webkit-mask-image:linear-gradient(90deg, transparent, #000 36px, #000 calc(100% - 36px), transparent); mask-image:linear-gradient(90deg, transparent, #000 36px, #000 calc(100% - 36px), transparent)}
+    figcaption{gap:2px 18px; font-size:11px}
 
     /* shelf and bench fill the phone instead of sitting in a desktop-width column */
     .rack{gap:28px 14px}
     .vhs, .film{width:100%}
     .book{width:calc(50% - 7px)}
-    .bench{grid-template-columns:1fr; gap:34px}
+    .bench{grid-template-columns:1fr; gap:30px}
+    .mac-cap{margin-top:12px}
     .shelf-h{margin-bottom:16px}
-    .shelf-h:not(:first-child){margin-top:44px}
+    .shelf-h:not(:first-child){margin-top:40px}
+    footer{margin-top:48px}
 
-    /* give the modal the whole screen — 24px of chrome each side wastes a phone */
-    .modal{padding:10px}
-    .modal-body{padding:10px}
-    .modal-head{padding:10px 12px}
+    /* videos: nearly the whole screen */
+    .modal{padding:8px}
+    .modal-body{padding:8px}
+    .modal-head{padding:6px 6px 6px 12px}
+    .modal-x{padding:8px 12px; font-size:24px}
+
+    /* a live app gets the entire screen — a framed window inside a phone is too cramped */
+    .modal:has(.modal-box.wide){padding:0}
+    .modal-box.wide{
+      width:100%; height:100vh; height:100dvh; max-height:none; border:0;
+      display:flex; flex-direction:column; overflow:hidden;
+      padding-bottom:env(safe-area-inset-bottom);
+    }
+    .modal-box.wide .modal-head{padding-top:max(6px, env(safe-area-inset-top))}
+    .modal-box.wide .modal-body{flex:1; min-height:0; display:flex; flex-direction:column; padding:0}
+    .modal-box.wide .frame.app{flex:1; min-height:0; aspect-ratio:auto; border:0}
+    .modal-box.wide .modal-note{margin:0; padding:9px 12px; border-top:1px solid var(--rule)}
 
     /* comfortable thumb targets */
-    .tab{padding-bottom:12px}
-    .icon-btn{width:38px; height:38px}
+    .icon-btn{width:40px; height:40px}
+    .fan .icon-btn{width:40px}
     .fan{gap:0}
-    .socials:hover .fan, .socials:focus-within .fan, .socials.open .fan{width:152px}
+    .socials:hover .fan, .socials:focus-within .fan, .socials.open .fan{width:160px}
+  }
+
+  /* touch: a tapped card shouldn't stay lifted after the modal closes */
+  @media (hover: none){
+    .vhs:hover, .film:hover, .book:hover{transform:none}
   }
 </style>
 </head>
@@ -1218,6 +1258,28 @@ const el = (tag, attrs = {}, text) => {
 
 const svg = document.getElementById('plot');
 const entriesEl = document.getElementById('entries');
+const plotScroll = document.querySelector('.plot-scroll');
+
+/* fade whichever edge still has plot beyond it, and keep the band names in view */
+function updatePlotFades() {
+  const max = plotScroll.scrollWidth - plotScroll.clientWidth;
+  const sl = plotScroll.scrollLeft;
+  plotScroll.classList.toggle('more-left', max > 1 && sl > 1);
+  plotScroll.classList.toggle('more-right', max > 1 && sl < max - 1);
+  const r = svg.getBoundingClientRect();
+  const scale = r.width / W;
+  if (!scale) return;
+  const edge = plotScroll.getBoundingClientRect().left - r.left;   // css px of plot hidden off the left
+  const pin = edge > PAD.l * scale - 40;
+  svg.querySelectorAll('.level-label').forEach(t => {
+    if (!t.dataset.x) { t.dataset.x = t.getAttribute('x'); t.dataset.y = t.getAttribute('y'); }
+    t.classList.toggle('pinned', pin);
+    t.setAttribute('x', pin ? (edge + 40) / scale : t.dataset.x);   // clear of the 36px fade
+    t.setAttribute('y', pin ? +t.dataset.y + 13 : t.dataset.y);   // under the gridline, where role labels don't sit
+  });
+}
+plotScroll.addEventListener('scroll', updatePlotFades, { passive: true });
+addEventListener('resize', updatePlotFades, { passive: true });
 
 let nodes = {}, cards = {}, open = null;
 
@@ -1228,42 +1290,54 @@ const peek = document.createElement('div');
 peek.className = 'peek';
 document.body.appendChild(peek);
 
+/* touch screens have no hover: a tap fires a synthetic mouseenter, which would
+   flash the card over whatever the tap opens — so previews are pointer-only */
+const CAN_HOVER = matchMedia('(hover: hover) and (pointer: fine)').matches;
+
+/* the preview images are separate files now, so warm them once the page is idle —
+   otherwise the first hover shows an empty card while the image downloads */
+if (CAN_HOVER) {
+  const warm = () => [window.PREVIEWS, window.PROOFS].forEach(m =>
+    Object.values(m || {}).forEach(src => { const im = new Image(); im.src = src; }));
+  'requestIdleCallback' in window ? requestIdleCallback(warm, { timeout: 4000 }) : setTimeout(warm, 2500);
+}
+
+function placePeek(b, gap, centered) {
+  const pw = peek.offsetWidth, ph = peek.offsetHeight;
+  let left = centered ? b.left + b.width / 2 - pw / 2 : b.left;
+  left = Math.max(8, Math.min(left, innerWidth - pw - 8));
+  let top = b.top - ph - gap;
+  if (top < 8) top = b.bottom + gap;
+  peek.style.left = left + 'px';
+  peek.style.top = top + 'px';
+}
+function openPeek(html, el, gap, centered) {
+  peek.innerHTML = html;
+  peek.classList.add('show');
+  const b = el.getBoundingClientRect();
+  requestAnimationFrame(() => placePeek(b, gap, centered));
+  /* an image still loading has no height yet — re-place once it lands */
+  const im = peek.querySelector('img');
+  if (im && !im.complete) im.addEventListener('load', () => placePeek(b, gap, centered), { once: true });
+}
+
 function showPeek(r, g) {
+  if (!CAN_HOVER) return;
   const img = (window.PREVIEWS || {})[r.id];
-  peek.innerHTML =
+  openPeek(
     `${img ? `<img src="${img}" alt="">` : ''}` +
     `<span class="pk-t">${r.org}</span><span class="pk-r">${r.short || r.role}</span>` +
-    `<div class="pk-d">${r.dates}</div>`;
-  peek.classList.add('show');
-  const b = g.getBoundingClientRect();
-  requestAnimationFrame(() => {
-    const pw = peek.offsetWidth, ph = peek.offsetHeight;
-    let left = b.left + b.width / 2 - pw / 2;
-    left = Math.max(8, Math.min(left, innerWidth - pw - 8));
-    let top = b.top - ph - 14;
-    if (top < 8) top = b.bottom + 14;
-    peek.style.left = left + 'px';
-    peek.style.top = top + 'px';
-  });
+    `<div class="pk-d">${r.dates}</div>`, g, 14, true);
 }
 function hidePeek() { peek.classList.remove('show'); }
 
 /* a link carrying data-proof shows that image on hover — used for the boards
    that evidence the ecosystem work */
 function showProof(key, label, el) {
+  if (!CAN_HOVER) return;
   const img = (window.PROOFS || {})[key];
   if (!img) return;
-  peek.innerHTML = `<img src="${img}" alt=""><span class="pk-t">${label}</span>`;
-  peek.classList.add('show');
-  const b = el.getBoundingClientRect();
-  requestAnimationFrame(() => {
-    const pw = peek.offsetWidth, ph = peek.offsetHeight;
-    let left = Math.max(8, Math.min(b.left, innerWidth - pw - 8));
-    let top = b.top - ph - 12;
-    if (top < 8) top = b.bottom + 12;
-    peek.style.left = left + 'px';
-    peek.style.top = top + 'px';
-  });
+  openPeek(`<img src="${img}" alt=""><span class="pk-t">${label}</span>`, el, 12, false);
 }
 
 function wireProofs(scope) {
@@ -1477,6 +1551,13 @@ function render(key) {
   shelfEl.hidden = !isMedia;
   labEl.hidden = !isTools;
   hidePeek();
+
+  /* on a phone the plot is wider than the screen: open it on the recent end,
+     where NOW is, and let the reader drag back through the earlier years */
+  if (!isMedia && !isTools) {
+    plotScroll.scrollLeft = plotScroll.scrollWidth;
+    updatePlotFades();
+  }
 }
 
 /* ------------------------------------------------------------------ *
@@ -1529,13 +1610,13 @@ function countOpen(id) {
 
 function buildLab(roles) {
   const screens = window.SCREENS || {};
-  labEl.innerHTML = '<div class="bench">' + roles.map(r => {
+  labEl.innerHTML = '<div class="bench">' + roles.map((r, i) => {
     const href = r.links && r.links.length ? r.links[0].href : null;
     return `
       <${href ? 'a' : 'div'} class="mac" data-id="${r.id}"
         ${href ? `href="${href}" target="_blank" rel="noopener"` : ''}>
         <span class="lid">
-          <span class="screen">${screens[r.id] ? `<img src="${screens[r.id]}" alt="${esc(r.org)} screenshot">` : ''}</span>
+          <span class="screen">${screens[r.id] ? `<img src="${screens[r.id]}" alt="${esc(r.org)} screenshot" width="640" height="400" loading="${i < 2 ? 'eager' : 'lazy'}" decoding="async">` : ''}</span>
         </span>
         <span class="base"></span>
         <span class="mac-cap">
@@ -1617,7 +1698,7 @@ function buildShelf(roles) {
       <button class="vhs" data-id="${r.id}" aria-label="${esc(r.org)} — play trailer">
         <span class="shell">
           <span class="label">
-            ${covers[r.id] ? `<img src="${covers[r.id]}" alt="">` : ''}
+            ${covers[r.id] ? `<img src="${covers[r.id]}" alt="" loading="lazy" decoding="async">` : ''}
             <span class="label-foot"><span>${esc(r.org)}</span><span class="yr">${esc(r.dates)}</span></span>
           </span>
           <span class="play" aria-hidden="true"></span>
@@ -1634,7 +1715,7 @@ function buildShelf(roles) {
       const href = r.links && r.links.length ? r.links[0].href : null;
       return `
       <a class="book" data-id="${r.id}" ${href ? `href="${href}" target="_blank" rel="noopener"` : 'href="#" role="button"'}>
-        <span class="book-3d">${covers[r.id] ? `<img src="${covers[r.id]}" alt="${esc(r.org)} cover">` : ''}</span>
+        <span class="book-3d">${covers[r.id] ? `<img src="${covers[r.id]}" alt="${esc(r.org)} cover" loading="lazy" decoding="async">` : ''}</span>
         <span class="book-cap"><b>${esc(r.org)}</b>${esc(r.dates)}</span>
       </a>`;
     }).join('');
@@ -1644,11 +1725,11 @@ function buildShelf(roles) {
   /* AI-made videos, as film strips */
   const films = window.FILMS || {};
   creativesHtml += '<h2 class="shelf-h">B&amp;B Production <span class="hsub">AI Creatives</span></h2><div class="rack">';
-  creativesHtml += VIDEOS.map(v => `
+  creativesHtml += VIDEOS.map((v, i) => `
     <button class="film" data-id="${v.id}" aria-label="${esc(v.title)} — play">
       <span class="strip">
         <span class="perf"></span>
-        <span class="frame-still">${films[v.id] ? `<img src="${films[v.id]}" alt="">` : ''}
+        <span class="frame-still">${films[v.id] ? `<img src="${films[v.id]}" alt="" loading="${i < 1 ? 'eager' : 'lazy'}" decoding="async">` : ''}
           <span class="play" aria-hidden="true"></span>
         </span>
         <span class="perf"></span>
@@ -1782,7 +1863,15 @@ document.querySelectorAll('.tab').forEach(btn => {
       b.setAttribute('aria-selected', String(on));
     });
     track('tab', btn.dataset.mode);
+    /* the tab bar is sticky, so a switch made far down a long shelf would land
+       mid-page — bring the new view's top up under the bar instead */
+    const bar = document.querySelector('.switcher');
+    const stuck = bar.getBoundingClientRect().top <= 0.5 && scrollY > 0;
     render(btn.dataset.mode);
+    if (stuck) {
+      const content = [shelfEl, labEl, document.querySelector('figure')].find(e => !e.hidden);
+      scrollTo({ top: scrollY + content.getBoundingClientRect().top - bar.offsetHeight - 18 });
+    }
   });
 });
 
