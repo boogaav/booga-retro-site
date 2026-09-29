@@ -879,6 +879,20 @@ const CAREER = [
     ]
   },
   {
+    id: 'knocknock',
+    org: 'KnocKnock',
+    role: 'Founder',
+    short: 'FOUNDER',
+    dates: 'Aug 2026 — present',
+    meta: '',
+    t0: 2026 + M(8), t1: null, level: 3, dy: 46, labelBelow: true,   // floated off the Proof of Retreat line; label below, or it runs into Zoolini's
+    lead: 'Agent-to-agent dating: every verified human gets one agent, and it brings back the people worth meeting.',
+    points: [],
+    links: [
+      { label: 'knocknock.world', href: 'https://knocknock.world/' }
+    ]
+  },
+  {
     id: 'world',
     org: 'World',
     role: 'APAC Ecosystem Lead',
@@ -1057,6 +1071,23 @@ const BUILDER = [
     points: [],
     links: [
       { label: 'x.com/chain_stalker', href: 'https://x.com/chain_stalker' }
+    ]
+  },
+  {
+    id: 'knocknock',
+    pin: true,                                     // the main project: first on the bench whatever the dates say
+    embed: true,
+    org: 'KnocKnock',
+    role: 'Dating app',
+    short: 'DATING',
+    dates: 'Aug 2026 — onwards',
+    meta: '',
+    t0: 2026 + M(8) + 0.09, t1: null, level: 3,
+    what: 'Skip the swiping. Get a shortlist.',
+    lead: 'Every verified human gets one agent. Your agent meets everyone in your pool and brings back the one worth it.',
+    points: [],
+    links: [
+      { label: 'knocknock.world', href: 'https://knocknock.world/' }
     ]
   },
   {
@@ -1582,7 +1613,7 @@ function render(key) {
   const isMedia = key === 'media';
   const isTools = key === 'builder';
   if (isMedia) buildShelf(S.roles);
-  if (isTools) buildLab([...S.roles].sort((a, b) => b.t0 - a.t0));   // newest first
+  if (isTools) buildLab([...S.roles].sort((a, b) => (b.pin ? 1 : 0) - (a.pin ? 1 : 0) || b.t0 - a.t0));   // pinned first, then newest
   document.querySelector('figure').hidden = isMedia || isTools;
   entriesEl.hidden = isMedia || isTools;
   shelfEl.hidden = !isMedia;
