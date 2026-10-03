@@ -407,6 +407,11 @@
   .modal-body .frame.app{aspect-ratio:16/10; background:var(--paper)}
   .modal-body .frame iframe{display:block; width:100%; height:100%; border:0}
   .modal-body .twitter-tweet{margin:0 auto !important}
+  /* before widgets.js swaps it in (or if a blocker stops it) the post is a plain link */
+  .modal-body blockquote.twitter-tweet{
+    padding:40px 16px; text-align:center; border:1px solid var(--rule);
+    font-family:var(--mono); font-size:12px;
+  }
   .modal-note{
     margin:12px 0 0; font-family:var(--mono); font-size:11px; color:var(--muted);
   }
@@ -1238,39 +1243,46 @@ const BUILDER = [
   }
 ];
 
-/* AI-made videos — trailers and a music video. Shown as film strips under the books. */
+/* AI-made videos — trailers and music videos. Shown as film strips under the books.
+   `at` is the publish date; the rack sorts on it, newest first, so a new film
+   only needs adding here — order in this list doesn't matter. */
 const VIDEOS = [
   {
     id: 'colony-film', title: 'Colony', sub: 'Battle for Survival — trailer',
-    dates: 'Feb 2026', kind: 'yt', vid: 'DV15DUv47JY',
+    dates: 'Feb 2026', at: '2026-02-12', kind: 'yt', vid: 'DV15DUv47JY',
     link: { label: 'youtube.com', href: 'https://www.youtube.com/watch?v=DV15DUv47JY' }
   },
   {
     id: 'handshake-film', title: 'Handshake', sub: 'Trailer',
-    dates: 'Apr 2026', kind: 'yt', vid: 'YylVp-8jLUA',
+    dates: 'Apr 2026', at: '2026-04-16', kind: 'yt', vid: 'YylVp-8jLUA',
     link: { label: 'youtube.com', href: 'https://www.youtube.com/watch?v=YylVp-8jLUA' }
   },
   {
     id: 'vibe', title: 'Vibe With Me', sub: 'Trailer',
-    dates: 'May 2026', kind: 'yt', vid: '0ogf-bWqLO4',
+    dates: 'May 2026', at: '2026-05-07', kind: 'yt', vid: '0ogf-bWqLO4',
     link: { label: 'youtube.com', href: 'https://www.youtube.com/watch?v=0ogf-bWqLO4' }
   },
   {
+    id: 'berlin', title: 'Berlin Calling', sub: 'Music video',
+    dates: 'May 2026', at: '2026-05-13', kind: 'ig', embed: 'https://www.instagram.com/p/DYR79B0BzSU/embed',
+    link: { label: 'instagram.com', href: 'https://www.instagram.com/p/DYR79B0BzSU/' }
+  },
+  {
     id: 'agi', title: 'Crypto Millionaire', sub: '“What will AGI do to humanity? He picked D” — trailer',
-    dates: 'Aug 2026', kind: 'yt', vid: 'jgpblY0BOKQ',
+    dates: 'Aug 2026', at: '2026-08-03', kind: 'yt', vid: 'jgpblY0BOKQ',
     link: { label: 'youtube.com', href: 'https://www.youtube.com/watch?v=jgpblY0BOKQ' }
   },
   {
     id: 'pretend', title: 'Pretend', sub: 'Music video',
-    dates: 'Sep 2026', kind: 'yt', vid: 'mQ6zHQYMAxc',
+    dates: 'Sep 2026', at: '2026-09-16', kind: 'yt', vid: 'mQ6zHQYMAxc',
     link: { label: 'youtube.com', href: 'https://www.youtube.com/watch?v=mQ6zHQYMAxc' }
   },
   {
-    id: 'berlin', title: 'Berlin Calling', sub: 'Music video',
-    dates: '', kind: 'ig', embed: 'https://www.instagram.com/p/DYR79B0BzSU/embed',
-    link: { label: 'instagram.com', href: 'https://www.instagram.com/p/DYR79B0BzSU/' }
+    id: 'cm-lumara', title: 'Crypto Millionaire', sub: '“What would you risk?” — Lumara Film Festival trailer',
+    dates: 'Sep 2026', at: '2026-09-17', kind: 'x', tweet: 'https://twitter.com/boogaav/status/2100617842789912751',
+    link: { label: 'x.com', href: 'https://x.com/boogaav/status/2100617842789912751' }
   }
-];
+].sort((a, b) => b.at.localeCompare(a.at));
 
 const SERIES = {
   career: {
@@ -1894,18 +1906,26 @@ function openApp(r) {
   modal.querySelector('.modal-x').focus();
 }
 
-/* AI videos: YouTube plays inline; Instagram gets its own portrait embed */
+/* AI videos: YouTube plays inline; Instagram gets its own portrait embed; X posts embed as the post */
 function openVideo(v) {
   hidePeek();
   lastFocus = document.activeElement;
   modalTitle.textContent = v.dates ? `${v.title} — ${v.dates}` : v.title;
   const note = `<p class="modal-note"><a href="${v.link.href}" target="_blank" rel="noopener">${esc(v.link.label)} ↗</a></p>`;
-  modalBody.innerHTML = v.kind === 'yt'
-    ? `<div class="frame"><iframe src="https://www.youtube-nocookie.com/embed/${v.vid}?autoplay=1&rel=0"
-         title="${esc(v.title)}" allow="accelerometer; autoplay; encrypted-media; picture-in-picture"
-         allowfullscreen></iframe></div>` + note
-    : `<div class="frame tall"><iframe src="${v.embed}" title="${esc(v.title)}"
-         allowtransparency="true" allowfullscreen scrolling="no"></iframe></div>` + note;
+  if (v.kind === 'x') {
+    /* the film lives in an X post — embed the post itself */
+    modalBody.innerHTML =
+      `<blockquote class="twitter-tweet" data-dnt="true" data-conversation="none"
+        data-theme="${matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light'}"><a href="${v.link.href}" target="_blank" rel="noopener">Loading the post… or watch it on X ↗</a></blockquote>` + note;
+    loadTweets(modalBody);
+  } else {
+    modalBody.innerHTML = v.kind === 'yt'
+      ? `<div class="frame"><iframe src="https://www.youtube-nocookie.com/embed/${v.vid}?autoplay=1&rel=0"
+           title="${esc(v.title)}" allow="accelerometer; autoplay; encrypted-media; picture-in-picture"
+           allowfullscreen></iframe></div>` + note
+      : `<div class="frame tall"><iframe src="${v.embed}" title="${esc(v.title)}"
+           allowtransparency="true" allowfullscreen scrolling="no"></iframe></div>` + note;
+  }
   modal.hidden = false;
   document.body.style.overflow = 'hidden';
   modal.querySelector('.modal-x').focus();
