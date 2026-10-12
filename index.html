@@ -618,14 +618,20 @@
     font-family:var(--mono); font-size:11px; color:var(--faint);
     display:flex; flex-wrap:wrap; gap:4px 22px;
   }
-  /* the way home: this page is one station on the civ.fm dial */
-  footer .station{margin-left:auto; color:var(--muted); text-decoration:none; border-bottom:1px solid var(--rule)}
-  footer .station:hover{color:var(--accent); border-bottom-color:var(--accent)}
+  /* the way home, top right: this page is one station on the civ.fm dial */
+  .wrap{position:relative}
+  .station{
+    position:absolute; top:58px; right:28px;
+    font-family:var(--mono); font-size:11px; letter-spacing:0.04em;
+    color:var(--muted); text-decoration:none; border-bottom:1px solid var(--rule);
+  }
+  .station:hover{color:var(--accent); border-bottom-color:var(--accent)}
 
   .swipe-hint{display:none}
 
   @media (max-width:600px){
     .wrap{padding:24px 16px 56px}
+    .station{top:30px; right:16px; font-size:10.5px}
 
     /* compact masthead: portrait beside the name, so the tabs sit above the fold */
     header{grid-template-columns:52px 1fr; column-gap:14px; row-gap:0; margin-bottom:22px; align-items:center}
@@ -694,6 +700,7 @@
 </head>
 <body>
 <div class="wrap">
+  <a class="station" href="https://civ.fm/">a frequency of civ.fm ↗</a>
 
   <header>
     <img class="portrait" src="portrait.webp" width="76" height="76"
@@ -757,7 +764,6 @@
   <footer>
     <span id="figcap">fig. 1 — career, plotted</span>
     <span id="srccap">source: CV, 2026</span>
-    <a class="station" href="https://civ.fm/" data-track="civfm">a frequency of civ.fm ↗</a>
   </footer>
 
 </div>
@@ -2108,7 +2114,7 @@ document.querySelectorAll('.tab').forEach(btn => {
   });
 });
 
-document.querySelector('footer .station').addEventListener('click', () => track('link', 'civfm'));
+document.querySelector('.station').addEventListener('click', () => track('link', 'civfm'));
 render('builder');
 
 /* ------------------------------------------------------------------ *
