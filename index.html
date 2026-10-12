@@ -128,6 +128,7 @@
     color:var(--muted); padding:0 2px 10px; margin-bottom:-1px;
     border-bottom:1px solid transparent;
   }
+  .tab[hidden]{display:none}   /* the Ask tab stays hidden until its backend is funded */
   .tab:hover{color:var(--ink)}
   .tab.on{color:var(--ink); border-bottom-color:var(--accent)}
   .tab:focus-visible{outline:1px solid var(--accent); outline-offset:2px}
@@ -556,6 +557,44 @@
     .body{padding-left:192px}
   }
 
+  /* ---------- ask: the clone ---------- */
+  .ask[hidden]{display:none}
+  .chat{display:flex; flex-direction:column; gap:16px; min-height:200px; margin-bottom:20px}
+  .msg{max-width:min(660px, 100%); display:flex; flex-direction:column}
+  .msg .who{
+    font-family:var(--mono); font-size:9.5px; letter-spacing:0.1em; text-transform:uppercase;
+    color:var(--faint); margin-bottom:4px;
+  }
+  .msg .text{font-size:16.5px; line-height:1.55; white-space:pre-wrap}
+  .msg.you{align-self:flex-end; align-items:flex-end}
+  .msg.you .text{background:var(--grid); padding:9px 13px; border-radius:3px}
+  .msg.thinking .text{color:var(--muted); font-style:italic}
+  .chips{display:flex; flex-wrap:wrap; gap:8px; margin-bottom:16px}
+  .chip{
+    all:unset; box-sizing:border-box; cursor:pointer;
+    font-family:var(--mono); font-size:11.5px; color:var(--muted);
+    border:1px solid var(--rule); border-radius:14px; padding:5px 11px;
+  }
+  .chip:hover{color:var(--accent); border-color:var(--accent)}
+  .chip:focus-visible{outline:1px solid var(--accent); outline-offset:2px}
+  .askbar{display:flex; align-items:center; gap:12px; border-top:1px solid var(--rule); padding-top:14px}
+  .askin{
+    all:unset; box-sizing:border-box; flex:1; color:var(--ink);
+    font-family:var(--serif); font-size:16.5px; padding:7px 2px;
+    border-bottom:1px solid var(--rule);
+  }
+  .askin::placeholder{color:var(--faint)}
+  .askin:focus{border-bottom-color:var(--accent)}
+  .asksend{
+    all:unset; cursor:pointer; padding:4px 6px;
+    font-family:var(--mono); font-size:11.5px; letter-spacing:0.1em; text-transform:uppercase; color:var(--accent);
+  }
+  .asksend[disabled]{color:var(--faint); cursor:default}
+  .asksend:focus-visible{outline:1px solid var(--accent); outline-offset:2px}
+  .askfoot{margin:14px 0 0; font-family:var(--mono); font-size:11px; color:var(--faint); line-height:1.5}
+  .askfoot a{color:var(--muted); border-bottom:1px solid var(--rule); text-decoration:none}
+  .askfoot a:hover{color:var(--accent); border-bottom-color:var(--accent)}
+
   /* ---------- hover preview card ---------- */
   .peek{
     position:fixed; z-index:20; pointer-events:none; display:none;
@@ -596,7 +635,10 @@
 
     /* the sticky tab bar runs edge to edge; tabs split the width, 44px tall for thumbs */
     .switcher{margin:0 -16px 18px; padding:0 8px; gap:0}
-    .tab{flex:1; text-align:center; padding:15px 0 13px; font-size:12px}
+    .tab{flex:1; text-align:center; padding:15px 0 13px; font-size:11px; letter-spacing:0.07em}
+    .msg .text{font-size:16px}
+    .chat{min-height:160px}
+    .chip{font-size:11px; padding:5px 9px}
 
     /* the plot keeps its own width and scrolls — say so, since there's no hover to hint it */
     .swipe-hint{display:inline; color:var(--accent)}
@@ -654,9 +696,9 @@
     <img class="portrait" src="portrait.webp" width="76" height="76"
          alt="BOOGA" decoding="async">
     <h1>BOOGA</h1>
-    <!-- swapped per series on render; this is the Tools copy, which loads first -->
+    <!-- swapped per series on render; this is the Zero to one copy, which loads first -->
     <p class="standfirst">
-      Small tools, each one a guess. Please try them, and help me find out which ones hold up.
+      The art of launching.
     </p>
     <ul class="contact">
       <li class="socials" id="socials">
@@ -685,11 +727,13 @@
   <nav class="switcher" role="tablist" aria-label="Series">
     <button class="tab"    data-mode="career"  role="tab" aria-selected="false">Career</button>
     <button class="tab"    data-mode="media"   role="tab" aria-selected="false">Media</button>
-    <button class="tab on" data-mode="builder" role="tab" aria-selected="true">Tools</button>
+    <button class="tab on" data-mode="builder" role="tab" aria-selected="true">Zero to one</button>
+    <button class="tab"    data-mode="ask"     role="tab" aria-selected="false" hidden>Ask</button>
   </nav>
 
   <section class="shelf" id="shelf" hidden aria-label="Media shelf"></section>
-  <section class="lab" id="lab" hidden aria-label="Tools"></section>
+  <section class="lab" id="lab" hidden aria-label="Zero to one"></section>
+  <section class="ask" id="ask" hidden aria-label="Ask the clone"></section>
 
   <figure>
     <div class="plot-scroll">
@@ -1309,11 +1353,17 @@ const SERIES = {
     levels: ['crypto', 'tools', 'agentic apps'],
     roles: BUILDER,
     tick0: 2021,
-    bio: 'Small tools, each one a guess. Please try them, and help me find out which ones hold up.',
+    bio: 'The art of launching.',
     ycap: 'domain',
-    fig: 'fig. 3 — tools, on the bench',
+    fig: 'fig. 3 — zero to one, on the bench',
     src: 'source: the builder himself',
-    aria: 'Tools, shown as a bench of screenshots rather than a plot.'
+    aria: 'Zero to one: launches, shown as a bench of screenshots rather than a plot.'
+  },
+  ask: {
+    isAsk: true,
+    bio: 'A clone of me, answering what I take on and what it costs. The human is one email away.',
+    fig: 'fig. 4 — the clone, answering',
+    src: 'source: a model, briefed on him'
   }
 };
 
@@ -1434,10 +1484,98 @@ function wireProofs(scope) {
 }
 
 /* ------------------------------------------------------------------ *
+ * the clone: a chat that answers "can we work together, and for what"
+ * ------------------------------------------------------------------ */
+const CLONE = 'https://booga-clone.fly.dev';
+const askEl = document.getElementById('ask');
+const OPENERS = ['What does it cost?', 'Can you build something for us?', 'Do you take video work?', 'What did you do at Zerion?'];
+const CLONE_HELLO = "I'm Booga's clone. Ask me about working with him — what he takes on, how he works, what it costs.";
+let askLog = [];          // what we send back as history
+let askBusy = false;
+
+function bubble(who, text, cls) {
+  const wrap = document.createElement('div');
+  wrap.className = 'msg ' + (cls || (who === 'you' ? 'you' : 'clone'));
+  const w = document.createElement('span');
+  w.className = 'who';
+  w.textContent = who === 'you' ? 'you' : 'booga’s clone';
+  const t = document.createElement('div');
+  t.className = 'text';
+  t.textContent = text;                       // textContent: the reply is never parsed as markup
+  wrap.append(w, t);
+  document.getElementById('chat').appendChild(wrap);
+  wrap.scrollIntoView({ block: 'nearest' });
+  return wrap;
+}
+
+async function askClone(text) {
+  if (askBusy || !text.trim()) return;
+  askBusy = true;
+  const input = document.getElementById('askin');
+  const send = document.querySelector('.asksend');
+  input.value = ''; send.disabled = true;
+  bubble('you', text);
+  askLog.push({ role: 'user', content: text });
+  track('ask', 'question');
+  const waiting = bubble('clone', 'thinking…', 'thinking');
+  try {
+    const r = await fetch(CLONE + '/ask', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ messages: askLog }),
+    });
+    const d = await r.json();
+    const reply = (d && d.reply) || "That one didn't come back. Email boogaav@gmail.com.";
+    waiting.remove();
+    bubble('clone', reply);
+    askLog.push({ role: 'assistant', content: reply });
+  } catch (e) {
+    waiting.remove();
+    bubble('clone', "I can't reach my own brain right now. Email boogaav@gmail.com — that always works.");
+  }
+  askBusy = false; send.disabled = false; input.focus();
+}
+
+function renderAsk(S) {
+  document.querySelector('figure').hidden = true;
+  entriesEl.hidden = true; shelfEl.hidden = true; labEl.hidden = true;
+  askEl.hidden = false;
+  document.querySelector('.standfirst').textContent = S.bio;
+  document.getElementById('figcap').textContent = S.fig;
+  document.getElementById('srccap').textContent = S.src;
+  hidePeek();
+  if (askEl.dataset.built) return;            // keep the conversation across tab switches
+  askEl.dataset.built = '1';
+  askEl.innerHTML =
+    '<div class="chat" id="chat" role="log" aria-live="polite"></div>' +
+    '<div class="chips" id="chips"></div>' +
+    '<form class="askbar" id="askbar">' +
+      '<input class="askin" id="askin" type="text" autocomplete="off" maxlength="1200" ' +
+      'placeholder="Ask about working together…" aria-label="Ask the clone a question">' +
+      '<button class="asksend" type="submit">Send</button>' +
+    '</form>' +
+    '<p class="askfoot">A clone, not the man — it can be wrong, and it can\'t agree terms. ' +
+    'For anything binding: <a href="mailto:boogaav@gmail.com">boogaav@gmail.com</a>.</p>';
+  bubble('clone', CLONE_HELLO);
+  const chips = document.getElementById('chips');
+  OPENERS.forEach(q => {
+    const b = document.createElement('button');
+    b.className = 'chip'; b.type = 'button'; b.textContent = q;
+    b.addEventListener('click', () => askClone(q));
+    chips.appendChild(b);
+  });
+  document.getElementById('askbar').addEventListener('submit', e => {
+    e.preventDefault();
+    askClone(document.getElementById('askin').value);
+  });
+}
+
+/* ------------------------------------------------------------------ *
  * full redraw for one series: axes, grid, nodes, cards
  * ------------------------------------------------------------------ */
 function render(key) {
   const S = SERIES[key];
+  if (S.isAsk) return renderAsk(S);
   const levels = S.levels;
   const y = lv => levels.length > 1
     ? Y_BOT - (lv - 1) / (levels.length - 1) * (Y_BOT - Y_TOP)
@@ -1632,6 +1770,7 @@ function render(key) {
   entriesEl.hidden = isMedia || isTools;
   shelfEl.hidden = !isMedia;
   labEl.hidden = !isTools;
+  askEl.hidden = true;
   hidePeek();
 
   /* on a phone the plot is wider than the screen: open it on the recent end,
