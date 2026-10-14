@@ -290,7 +290,7 @@
     font-family:var(--mono); font-size:10px; letter-spacing:0.08em; text-transform:uppercase;
     color:var(--faint);
   }
-  /* portrait embeds (Instagram) need a taller window than 16:9 */
+  /* portrait embeds (Instagram, YouTube Shorts) need a taller window than 16:9 */
   .modal-body .frame.tall{
     width:min(400px, 100%); margin:0 auto; aspect-ratio:0.56;
     background:var(--paper);
@@ -1322,6 +1322,11 @@ const VIDEOS = [
     link: { label: 'instagram.com', href: 'https://www.instagram.com/p/DYR79B0BzSU/' }
   },
   {
+    id: 'jc-reel', title: 'I, Jackie Chain', sub: 'Trailer — reel',
+    dates: 'Jul 2026', at: '2026-07-23', kind: 'yt', vid: 'aYi-34PXoCs', vertical: true,
+    link: { label: 'youtube.com', href: 'https://www.youtube.com/shorts/aYi-34PXoCs' }
+  },
+  {
     id: 'agi', title: 'Crypto Millionaire', sub: '“What will AGI do to humanity? He picked D” — trailer',
     dates: 'Aug 2026', at: '2026-08-03', kind: 'yt', vid: 'jgpblY0BOKQ',
     link: { label: 'youtube.com', href: 'https://www.youtube.com/watch?v=jgpblY0BOKQ' }
@@ -2069,7 +2074,7 @@ function openVideo(v) {
     loadTweets(modalBody);
   } else {
     modalBody.innerHTML = v.kind === 'yt'
-      ? `<div class="frame"><iframe src="https://www.youtube-nocookie.com/embed/${v.vid}?autoplay=1&rel=0"
+      ? `<div class="frame${v.vertical ? ' tall' : ''}"><iframe src="https://www.youtube-nocookie.com/embed/${v.vid}?autoplay=1&rel=0"
            title="${esc(v.title)}" allow="accelerometer; autoplay; encrypted-media; picture-in-picture"
            allowfullscreen></iframe></div>` + note
       : `<div class="frame tall"><iframe src="${v.embed}" title="${esc(v.title)}"
