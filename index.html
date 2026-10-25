@@ -1356,6 +1356,12 @@ const VIDEOS = [
     id: 'cm-lumara', title: 'Crypto Millionaire', sub: '“What would you risk?” — Lumara Film Festival trailer',
     dates: 'Sep 2026', at: '2026-09-17', kind: 'x', tweet: 'https://twitter.com/boogaav/status/2100617842789912751',
     link: { label: 'x.com', href: 'https://x.com/boogaav/status/2100617842789912751' }
+  },
+  {
+    /* a page, not a single film: the gallery opens in its own tab */
+    id: 'screeming-room', title: 'Screeming Room', sub: 'Gallery — four music videos',
+    dates: 'Oct 2026', at: '2026-10-23', kind: 'page',
+    link: { label: 'Screeming Room', href: 'https://claude.ai/artifact/VDRm6d82Y9137jCHRm4jDQ' }
   }
 ].sort((a, b) => b.at.localeCompare(a.at));
 
@@ -1978,7 +1984,7 @@ function buildShelf(roles) {
   const films = window.FILMS || {};
   creativesHtml += '<h2 class="shelf-h">B&amp;B Production <span class="hsub">AI Creatives</span></h2><div class="rack">';
   creativesHtml += VIDEOS.map((v, i) => `
-    <button class="film" data-id="${v.id}" aria-label="${esc(v.title)} — play">
+    <button class="film" data-id="${v.id}" aria-label="${esc(v.title)} — ${v.kind === 'page' ? 'open the gallery' : 'play'}">
       <span class="strip">
         <span class="perf"></span>
         <span class="frame-still">${films[v.id] ? `<img src="${films[v.id]}" alt="" loading="${i < 1 ? 'eager' : 'lazy'}" decoding="async">` : ''}
@@ -2076,9 +2082,11 @@ function openApp(r) {
   modal.querySelector('.modal-x').focus();
 }
 
-/* AI videos: YouTube plays inline; Instagram gets its own portrait embed; X posts embed as the post */
+/* AI videos: YouTube plays inline; Instagram gets its own portrait embed; X posts embed as the post;
+   a gallery page opens in a new tab */
 function openVideo(v) {
   hidePeek();
+  if (v.kind === 'page') { window.open(v.link.href, '_blank', 'noopener'); return; }
   lastFocus = document.activeElement;
   modalTitle.textContent = v.dates ? `${v.title} — ${v.dates}` : v.title;
   const note = `<p class="modal-note"><a href="${v.link.href}" target="_blank" rel="noopener">${esc(v.link.label)} ↗</a></p>`;
