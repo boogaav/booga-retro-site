@@ -407,6 +407,10 @@
   /* live apps want more height than a video */
   .modal-body .frame.app{aspect-ratio:16/10; background:var(--paper)}
   .modal-body .frame iframe{display:block; width:100%; height:100%; border:0}
+  /* live sites take seconds: show the screenshot at once, fade the real page in on load */
+  .modal-body .frame.app{background-size:cover; background-position:top}
+  .modal-body .frame.app iframe{opacity:0; transition:opacity .35s}
+  .modal-body .frame.app iframe.ready{opacity:1}
   .modal-body .twitter-tweet{margin:0 auto !important}
   /* before widgets.js swaps it in (or if a blocker stops it) the post is a plain link */
   .modal-body blockquote.twitter-tweet{
@@ -2072,10 +2076,13 @@ function openApp(r) {
   modalTitle.textContent = r.org;
   const link = r.links && r.links[0];
   modalBody.innerHTML =
-    `<div class="frame app"><iframe src="${link.href}" title="${esc(r.org)}"
+    `<div class="frame app"${(window.SCREENS || {})[r.id] ? ` style="background-image:url(${window.SCREENS[r.id]})"` : ''}><iframe src="${link.href}" title="${esc(r.org)}"
        allow="accelerometer; autoplay; clipboard-write; encrypted-media; fullscreen; picture-in-picture"
        allowfullscreen></iframe></div>` +
     `<p class="modal-note"><a href="${link.href}" target="_blank" rel="noopener">${esc(link.label)} ↗</a></p>`;
+  const f = modalBody.querySelector('iframe');
+  f.addEventListener('load', () => f.classList.add('ready'), { once: true });
+  setTimeout(() => f.classList.add('ready'), 6000); // sites that never fire load still get shown
   modal.hidden = false;
   modal.querySelector('.modal-box').classList.add('wide');
   document.body.style.overflow = 'hidden';
