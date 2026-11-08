@@ -1,0 +1,8 @@
+<!doctype html>
+<meta charset="utf-8">
+<title>BOOGA</title>
+<script>
+  /* booga.civ.fm/<reader> is a reader view: hand the slug to the main page, which loads readers/<slug>.json */
+  var s = location.pathname.split('/')[1] || '';
+  if (window.top === window) location.replace(/^[a-z0-9-]{1,40}$/.test(s) ? '/?for=' + s : '/');   // never inside a frame
+</script>

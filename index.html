@@ -80,6 +80,7 @@
     margin:0; max-width:52ch; color:var(--muted);
     font-size:clamp(15px,1.7vw,17px);
   }
+  .prepared{grid-column:2; margin:10px 0 0; font-family:var(--mono); font-size:11.5px; letter-spacing:0.08em; text-transform:uppercase; color:var(--accent)}
   .contact{
     grid-column:2; margin:18px 0 0; padding:0; list-style:none;
     display:flex; flex-wrap:wrap; align-items:center; gap:6px 10px;
@@ -458,6 +459,9 @@
   .node .cap{fill:var(--paper); stroke:var(--ink); stroke-width:2}
   .node .hit{fill:transparent; stroke:transparent; stroke-width:26; stroke-linecap:round}
   .node:focus{outline:none}
+  /* reader views dim the roles that matter less to that reader */
+  .node.dim{opacity:.3; transition:opacity .2s}
+  .node.dim:hover, .node.dim.on{opacity:1}
 
   .node.on .seg,   .node:hover .seg   {stroke:var(--accent)}
   .node.on .cap,   .node:hover .cap   {stroke:var(--accent); fill:var(--accent)}
@@ -645,6 +649,7 @@
     h1{margin:0; font-size:28px}
     .motto{grid-column:1 / -1; margin:14px 0 0; font-size:17px}
     .standfirst{grid-column:1 / -1; margin-top:8px; font-size:16px; line-height:1.5}
+    .prepared{grid-column:1 / -1}
     .contact{grid-column:1 / -1; margin-top:6px; margin-left:-9px}
     .entry-head{grid-template-columns:1fr 22px; gap:0 16px}
     .when{grid-column:1/-1; margin-bottom:6px}
@@ -718,6 +723,7 @@
     <p class="standfirst">
       The art of launching.
     </p>
+    <p class="prepared" hidden></p>
     <ul class="contact">
       <li class="socials" id="socials">
         <button class="icon-btn trigger" id="socials-trigger" aria-label="Contact links" aria-expanded="false">
@@ -746,7 +752,7 @@
     <button class="tab"    data-mode="career"  role="tab" aria-selected="false">Career</button>
     <button class="tab"    data-mode="media"   role="tab" aria-selected="false">Media</button>
     <button class="tab on" data-mode="builder" role="tab" aria-selected="true">Zero to one</button>
-    <button class="tab"    data-mode="ask"     role="tab" aria-selected="false" hidden>Ask</button>
+    <button class="tab"    data-mode="ask"     role="tab" aria-selected="false">Ask</button>
   </nav>
 
   <section class="shelf" id="shelf" hidden aria-label="Media shelf"></section>
@@ -1548,6 +1554,10 @@ function wireProofs(scope) {
  * the clone: a chat that answers "can we work together, and for what"
  * ------------------------------------------------------------------ */
 const CLONE = 'https://booga-clone.fly.dev';
+/* reader view: booga.civ.fm/<slug> (via 404.html) or ?for=<slug> loads readers/<slug>.json */
+const READER_SLUG = (new URLSearchParams(location.search).get('for') || '').toLowerCase().replace(/[^a-z0-9-]/g, '');
+let READER = null;
+const bioFor = (key, S) => (READER && READER.bio && READER.bio[key]) || S.bio;
 const askEl = document.getElementById('ask');
 const OPENERS = ['What does it cost?', 'Can you build something for us?', 'Do you take video work?', 'What did you do at Zerion?'];
 const CLONE_HELLO = "I'm Booga's clone. Ask me about working with him — what he takes on, how he works, what it costs.";
@@ -1583,7 +1593,7 @@ async function askClone(text) {
     const r = await fetch(CLONE + '/ask', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ messages: askLog }),
+      body: JSON.stringify({ messages: askLog, reader: READER ? READER_SLUG : undefined }),
     });
     const d = await r.json();
     const reply = (d && d.reply) || "That one didn't come back. Email boogaav@gmail.com.";
@@ -1601,7 +1611,7 @@ function renderAsk(S) {
   document.querySelector('figure').hidden = true;
   entriesEl.hidden = true; shelfEl.hidden = true; labEl.hidden = true;
   askEl.hidden = false;
-  document.querySelector('.standfirst').textContent = S.bio;
+  document.querySelector('.standfirst').textContent = bioFor('ask', S);
   document.getElementById('figcap').textContent = S.fig;
   document.getElementById('srccap').textContent = S.src;
   hidePeek();
@@ -1617,9 +1627,9 @@ function renderAsk(S) {
     '</form>' +
     '<p class="askfoot">A clone, not the man — it can be wrong, and it can\'t agree terms. ' +
     'For anything binding: <a href="mailto:boogaav@gmail.com">boogaav@gmail.com</a>.</p>';
-  bubble('clone', CLONE_HELLO);
+  bubble('clone', (READER && READER.hello) || CLONE_HELLO);
   const chips = document.getElementById('chips');
-  OPENERS.forEach(q => {
+  ((READER && READER.openers) || OPENERS).forEach(q => {
     const b = document.createElement('button');
     b.className = 'chip'; b.type = 'button'; b.textContent = q;
     b.addEventListener('click', () => askClone(q));
@@ -1651,7 +1661,7 @@ function render(key) {
   nodes = {}; cards = {}; open = null;
 
   svg.setAttribute('aria-label', S.aria);
-  document.querySelector('.standfirst').textContent = S.bio;
+  document.querySelector('.standfirst').textContent = bioFor(key, S);
   document.getElementById('ycap').textContent = S.ycap;
   document.getElementById('figcap').textContent = S.fig;
   document.getElementById('srccap').textContent = S.src;
@@ -1751,6 +1761,7 @@ function render(key) {
 
     svg.appendChild(g);
     nodes[r.id] = g;
+    if (key === 'career' && READER && READER.career && !READER.career.includes(r.id)) g.classList.add('dim');
 
     g.addEventListener('click', () => { hidePeek(); toggle(r.id); });
     g.addEventListener('keydown', e => {
@@ -1826,7 +1837,8 @@ function render(key) {
   const isMedia = key === 'media';
   const isTools = key === 'builder';
   if (isMedia) buildShelf(S.roles);
-  if (isTools) buildLab([...S.roles].sort((a, b) => (b.pin ? 1 : 0) - (a.pin ? 1 : 0) || b.t0 - a.t0));   // pinned first, then newest
+  const benchRank = r => { const i = READER && READER.bench ? READER.bench.indexOf(r.id) : -1; return i < 0 ? 99 : i; };
+  if (isTools) buildLab([...S.roles].sort((a, b) => benchRank(a) - benchRank(b) || (b.pin ? 1 : 0) - (a.pin ? 1 : 0) || b.t0 - a.t0));   // reader's picks, then pinned, then newest
   document.querySelector('figure').hidden = isMedia || isTools;
   entriesEl.hidden = isMedia || isTools;
   shelfEl.hidden = !isMedia;
@@ -2171,7 +2183,31 @@ document.querySelectorAll('.tab').forEach(btn => {
 });
 
 document.querySelector('.station').addEventListener('click', () => track('link', 'civfm'));
-render('builder');
+
+/* boot: a reader view waits for its file (same origin, fast); anything else renders straight away */
+(async () => {
+  if (READER_SLUG) {
+    try {
+      const r = await fetch('readers/' + READER_SLUG + '.json', { cache: 'no-store' });
+      if (r.ok) READER = await r.json();
+    } catch (e) { /* unknown reader: the normal page */ }
+  }
+  if (!READER) return render('builder');
+  try { history.replaceState(null, '', '/' + READER_SLUG + location.hash); } catch (e) { /* file:// preview */ }
+  const prep = document.querySelector('.prepared');
+  prep.textContent = READER.label; prep.hidden = false;
+  track('reader', READER_SLUG);
+  /* tell the clone's private log the link was opened, once per visit */
+  try {
+    if (!sessionStorage.getItem('seen:' + READER_SLUG)) {
+      sessionStorage.setItem('seen:' + READER_SLUG, '1');
+      fetch(CLONE + '/seen', { method: 'POST', headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ reader: READER_SLUG }), keepalive: true }).catch(() => {});
+    }
+  } catch (e) { /* storage blocked: skip the ping */ }
+  const tab = document.querySelector('.tab[data-mode="' + (READER.tab || 'builder') + '"]');
+  tab ? tab.click() : render('builder');
+})();
 
 /* ------------------------------------------------------------------ *
  * socials: hover fans them out, but touch has no hover — so tap toggles
