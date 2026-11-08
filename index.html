@@ -1560,7 +1560,7 @@ let READER = null;
 const bioFor = (key, S) => (READER && READER.bio && READER.bio[key]) || S.bio;
 const askEl = document.getElementById('ask');
 const OPENERS = ['What does it cost?', 'Can you build something for us?', 'Do you take video work?', 'What did you do at Zerion?'];
-const CLONE_HELLO = "I'm Booga's clone. Ask me about working with him — what he takes on, how he works, what it costs.";
+const CLONE_HELLO = "I'm Booga's clone, trained on his own notes. Ask me what I've built, what I take on, or how I work.";
 let askLog = [];          // what we send back as history
 let askBusy = false;
 

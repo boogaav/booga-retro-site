@@ -7,8 +7,24 @@
     "career": "Ten years of building communities: builders, partners, creators.",
     "ask": "My clone, briefed on the fal role. The human is one email away."
   },
-  "bench": ["oursong", "knocknock", "handshake", "civfm", "colony", "villedge"],
-  "career": ["zerion", "incognito", "por"],
-  "hello": "I'm Booga's clone, briefed on fal's Community Growth role. Ask what he has done that fits.",
-  "openers": ["Why would he fit fal?", "What communities has he built?", "What has he made with AI video?", "How would he run a fal hackathon?"]
+  "bench": [
+    "oursong",
+    "knocknock",
+    "handshake",
+    "civfm",
+    "colony",
+    "villedge"
+  ],
+  "career": [
+    "zerion",
+    "incognito",
+    "por"
+  ],
+  "hello": "I'm Booga's clone, briefed on fal's Community Growth role. Ask me what I've done that fits.",
+  "openers": [
+    "Why would you fit fal?",
+    "What communities have you built?",
+    "What have you made with AI video?",
+    "How would you run a fal hackathon?"
+  ]
 }
