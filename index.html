@@ -64,7 +64,7 @@
     align-items:start;
   }
   .portrait{
-    grid-row:1 / span 3; align-self:start;
+    grid-row:1 / span 4; align-self:start;
     width:76px; height:76px; border-radius:50%;
     object-fit:cover; display:block;
     border:1px solid var(--rule);
@@ -74,6 +74,8 @@
     margin:0 0 10px;
   }
   h1 .dim{color:var(--muted)}
+  .motto{margin:0 0 10px; max-width:52ch; font-style:italic; font-size:clamp(17px,1.9vw,19px); line-height:1.4}
+  .motto cite{font-style:normal; font-family:var(--mono); font-size:11px; letter-spacing:0.08em; text-transform:uppercase; color:var(--faint); margin-left:8px; white-space:nowrap}
   .standfirst{
     margin:0; max-width:52ch; color:var(--muted);
     font-size:clamp(15px,1.7vw,17px);
@@ -641,7 +643,8 @@
     header{grid-template-columns:52px 1fr; column-gap:14px; row-gap:0; margin-bottom:22px; align-items:center}
     .portrait{grid-row:1; width:52px; height:52px}
     h1{margin:0; font-size:28px}
-    .standfirst{grid-column:1 / -1; margin-top:14px; font-size:16px; line-height:1.5}
+    .motto{grid-column:1 / -1; margin:14px 0 0; font-size:17px}
+    .standfirst{grid-column:1 / -1; margin-top:8px; font-size:16px; line-height:1.5}
     .contact{grid-column:1 / -1; margin-top:6px; margin-left:-9px}
     .entry-head{grid-template-columns:1fr 22px; gap:0 16px}
     .when{grid-column:1/-1; margin-bottom:6px}
@@ -710,6 +713,7 @@
     <img class="portrait" src="portrait.webp" width="76" height="76"
          alt="BOOGA" decoding="async">
     <h1>BOOGA</h1>
+    <p class="motto">“Give me a place to stand, and I will move the Earth.” <cite>Archimedes</cite></p>
     <!-- swapped per series on render; this is the Zero to one copy, which loads first -->
     <p class="standfirst">
       The art of launching.
