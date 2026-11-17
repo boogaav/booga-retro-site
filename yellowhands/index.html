@@ -1,0 +1,31 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<meta name="color-scheme" content="dark"><title>Yellow Hands · Mobile design preview</title>
+<link rel="stylesheet" href="preview.css">
+</head>
+<body>
+<aside class="review" aria-label="Design review controls">
+  <a class="review-brand" href="#trading"><img src="assets/logo.png" alt="">YELLOW HANDS</a>
+  <span class="review-kicker">MOBILE VISION / 04</span>
+  <h1>One rhythm.<br>Every screen.</h1>
+  <p>A design prototype with sample data. No live prices, authentication, transactions or messages.</p>
+  <a class="figma-link" href="final-review.html">Review the final revisions ↗</a><div class="review-pages" id="review-pages"></div>
+  <div class="review-states"><label for="preview-state">Preview a state</label><select id="preview-state"><option value="normal">Ready to trade</option><option value="signedout">Signed out</option><option value="stale">Price feed delayed</option><option value="empty">Empty leaderboard</option><option value="board-error">Rankings unavailable</option><option value="low">Insufficient Money balance</option><option value="backing">Treasury verification unavailable</option><option value="owner">Owner liquidity controls</option></select></div>
+  <div class="review-controls"><span class="review-kicker">SIMULATE EXTERNAL EVENTS</span><button data-demo="approve">Owner approves withdrawal</button><button data-demo="hold">Owner holds withdrawal</button><button data-demo="receipt">Confirm blockchain receipt</button><button data-demo="elapsed">Advance open trade by 30s</button><button data-demo="reset">Reset preview</button></div>
+  <a class="figma-link" href="https://www.figma.com/design/3ogANHw8NulzdMaQMHxYcU" target="_blank" rel="noopener">Profile design in Figma ↗</a>
+</aside>
+<div class="mobile-review"><span>Design preview · sample data</span><button id="review-toggle" aria-label="Show design review controls">☷</button></div>
+<section class="device" aria-label="Yellow Hands mobile prototype">
+  <header class="telegram-chrome"><span aria-hidden="true">9:41</span><span aria-hidden="true">▰ ▰ ▱</span></header>
+  <div class="telegram-title"><button class="icon" data-action="leave" aria-label="Close preview app"></button><strong>Yellow Hands</strong><button class="icon" data-action="menu" aria-label="Open app settings"></button></div>
+  <main id="screen" tabindex="-1"></main>
+  <footer id="footer" class="app-footer"></footer>
+  <div class="home-indicator" aria-hidden="true"></div>
+  <dialog id="sheet" aria-labelledby="sheet-title"><div id="sheet-body"></div></dialog>
+  <div id="toast" role="status" hidden></div>
+</section>
+<aside class="review-note"><span class="review-kicker">DESIGN PRINCIPLES</span><h2>Chart first.<br>Details on demand.</h2><p>Charcoal surfaces, yellow actions, familiar hands and compact rotary controls. Explanations live behind “?”.</p><div class="route-map"><span>Leaderboard</span><b>← Trading →</b><span>Profile</span></div><p>The persistent switch is the only mode control. It changes trading, rankings, earnings and history together.</p><p>Wallet transfers remain separate from fast backend trades. A sent transaction is never presented as a confirmed balance.</p></aside>
+<script type="module" src="preview.js"></script>
+</body></html>
