@@ -1,0 +1,14 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="260" height="250" viewBox="0 0 240 230" role="img" aria-label="U, a cup-shaped basket holding gold, a share certificate, a house, bitcoin, ether and cash">
+      <polygon points="140,58 155,82 140,106 125,82" fill="#5A3E9E"></polygon>
+      <rect x="82" y="70" width="38" height="26" rx="5" fill="#C91A09"></rect>
+      <path d="M88 90l8-8 6 4 12-12" fill="none" stroke="#ffffff" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"></path>
+      <path d="M78 122 L96 105 L114 122 V142 H78 Z" fill="#A95500"></path>
+      <rect x="91" y="128" width="9" height="14" fill="#ffffff"></rect>
+      <circle cx="150" cy="124" r="20" fill="#F7931A"></circle>
+      <text x="150" y="133" text-anchor="middle" font-size="24" font-weight="800" fill="#ffffff" font-family="Inter, Arial, sans-serif">₿</text>
+      <rect x="120" y="150" width="50" height="28" rx="5" fill="#2FAE4B" transform="rotate(-8 145 164)"></rect>
+      <circle cx="143" cy="164" r="6" fill="none" stroke="#ffffff" stroke-width="2"></circle>
+      <circle cx="98" cy="164" r="23" fill="#E2B21C"></circle>
+      <circle cx="98" cy="164" r="16" fill="none" stroke="#B48700" stroke-width="2.5"></circle>
+      <path d="M48 36v92a72 72 0 0 0 144 0V36" fill="none" stroke="#14295e" stroke-width="30" stroke-linecap="round"></path>
+    </svg>
